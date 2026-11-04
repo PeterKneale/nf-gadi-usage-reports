@@ -13,7 +13,7 @@ class NfGadiObserverTest extends Specification {
         given:
         def factory = new NfGadiFactory()
         when:
-        def result = factory.create(Mock(Session))
+        def result = factory.create(Mock(Session) { getConfig() >> [:] })
         then:
         result.size() == 1
         result.first() instanceof NfGadiObserver
