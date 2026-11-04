@@ -10,7 +10,6 @@ nextflowPlugin {
     provider = 'NCI Australia'
     className = 'nci.plugin.NfGadiPlugin'
     extensionPoints = [
-        'nci.plugin.NfGadiExtension',
         'nci.plugin.NfGadiFactory'
     ]
 }
