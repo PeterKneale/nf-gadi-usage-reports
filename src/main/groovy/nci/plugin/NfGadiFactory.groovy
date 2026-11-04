@@ -34,8 +34,4 @@ class NfGadiFactory implements TraceObserverFactory {
         result.add( new NfGadiObserver(session) )
         return result
     }
-    // Collection<TraceObserver> create(Session session) {
-    //     return List.<TraceObserver>of(new NfGadiObserver())
-    // }
-
 }
