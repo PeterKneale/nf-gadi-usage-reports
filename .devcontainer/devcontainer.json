@@ -11,9 +11,6 @@
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
   },
-  "mounts": [
-    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
-  ],
   "customizations": {
     "vscode": {
       "extensions": [
