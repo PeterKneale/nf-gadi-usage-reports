@@ -44,16 +44,19 @@ import static java.lang.Math.ceil
 @CompileStatic
 class NfGadiObserver implements TraceObserver {
     private Session session
+    private String format
+    private String output
+    private Object publishTo
+    Path path
 
     NfGadiObserver(Session session) {
         this.session = session
+        this.format = session.config.navigate('gadi.format', '')
+        this.output = session.config.navigate('gadi.output', '')
+        this.publishTo = session.config.navigate('gadi.publishTo', '')
+        this.path = Paths.get(output)
     }
-
-    private String format = session.config.navigate('gadi.format', '')
-    private String output = session.config.navigate('gadi.output', '')
-    Path path = Paths.get(output) 
-
-    private Object publishTo = session.config.navigate('gadi.publishTo', '')
+    
     
     private Map<String, List<String>> cachedCSV = [:]
     private Map<String, Map<String, String>> cachedJson = [:]
