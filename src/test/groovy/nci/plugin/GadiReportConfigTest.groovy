@@ -1,34 +1,23 @@
 package nci.plugin
 
 import java.nio.file.Paths
-import nextflow.Session
 import spock.lang.Specification
 import spock.lang.Unroll
 
 /**
- * Covers each branch of {@link NfGadiObserver#configCheck()}
+ * Covers each branch of {@link GadiReportConfig} resolution
  */
-class NfGadiObserverConfigTest extends Specification {
-
-    private NfGadiObserver observerWith(String configured_format, String configured_output) {
-        def session = Stub(Session) {
-            getConfig() >> [gadi: [format: configured_format, output: configured_output]]
-        }
-        new NfGadiObserver(session)
-    }
+class GadiReportConfigTest extends Specification {
 
     @Unroll
-    def "configCheck: format='#configured_format' output='#configured_output' -> #expected_format, #expected_output"() {
-        given:
-        def observer = observerWith(configured_format, configured_output)
-
+    def "resolve: format='#configured_format' output='#configured_output' -> #expected_format, #expected_output"() {
         when:
-        observer.configCheck()
+        def config = new GadiReportConfig([format: configured_format, output: configured_output])
 
         then:
-        observer.format == expected_format
-        observer.output == expected_output
-        observer.path == Paths.get(expected_output)
+        config.format == expected_format
+        config.output == expected_output
+        config.path == Paths.get(expected_output)
 
         where:
         configured_format | configured_output || expected_format | expected_output
@@ -43,5 +32,29 @@ class NfGadiObserverConfigTest extends Specification {
         ''                | 'out.json'        || 'json'          | 'out.json'          // EXPECTED: format inferred from output extension
         ''                | 'out.csv'         || 'csv'           | 'out.csv'           // EXPECTED: format inferred from output extension
         ''                | 'out.txt'         || 'csv'           | 'UsageReport.csv'   // SURPRISING: user's file name discarded, a CSV in out.txt might be expected
+    }
+
+    def "missing gadi scope falls back to defaults"() {
+        when:
+        def config = new GadiReportConfig(null)
+
+        then:
+        config.format == 'csv'
+        config.output == 'UsageReport.csv'
+        config.resolvePublishTo() == null
+    }
+
+    @Unroll
+    def "resolvePublishTo: #description"() {
+        expect:
+        new GadiReportConfig([publishTo: publish_to]).resolvePublishTo() == expected
+
+        where:
+        description           | publish_to              || expected
+        'not set'             | null                    || null
+        'blank string'        | '   '                   || null
+        'plain string'        | ' /data/report.csv '    || '/data/report.csv'
+        'closure'             | { -> '/data/x.csv' }    || '/data/x.csv'
+        'closure gives null'  | { -> null }             || null
     }
 }
