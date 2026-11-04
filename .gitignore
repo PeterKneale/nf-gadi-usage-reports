@@ -8,3 +8,6 @@ CHANGELOG.template
 # Ignore Gradle build output directory
 build
 work
+
+# mac
+.DS_Store
