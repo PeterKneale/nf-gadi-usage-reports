@@ -43,6 +43,12 @@ import static java.lang.Math.ceil
 @Slf4j
 @CompileStatic
 class NfGadiObserver implements TraceObserver {
+    static final String REPORT_FORMAT_CSV = 'csv'
+    static final String REPORT_FORMAT_JSON = 'json'
+    static final String DEFAULT_REPORT_FORMAT = REPORT_FORMAT_CSV
+    static final String DEFAULT_REPORT_NAME = 'UsageReport'
+    static final String DEFAULT_OUTPUT = DEFAULT_REPORT_NAME + '.' + DEFAULT_REPORT_FORMAT
+
     private Session session
     private String format
     private String output
@@ -78,46 +84,46 @@ class NfGadiObserver implements TraceObserver {
         
     void configCheck() {
         if (format.isEmpty() && output.isEmpty()) {
-            format = 'csv'
-            output = 'UsageReport.csv'
+            format = DEFAULT_REPORT_FORMAT
+            output = DEFAULT_OUTPUT
             path = Paths.get(output) 
             log.info "Using default report name $output"
         } else if (!format.isEmpty() && ! output.isEmpty()) {
             if (output.endsWith(format)) {
                 log.info "Save the report to $output"
-            } else if (output.endsWith('json')) {
-                format = 'json'
+            } else if (output.endsWith(REPORT_FORMAT_JSON)) {
+                format = REPORT_FORMAT_JSON
                 log.info "Incorrect format setting, change it to json"
-            } else if (output.endsWith('csv')) {
-                format = 'csv'
+            } else if (output.endsWith(REPORT_FORMAT_CSV)) {
+                format = REPORT_FORMAT_CSV
                 log.info "Incorrect format setting, change it to csv"
             } else {
-                format = 'csv'
-                output = 'UsageReport.csv'
+                format = DEFAULT_REPORT_FORMAT
+                output = DEFAULT_OUTPUT
                 path = Paths.get(output) 
                 log.info "Incorrect format and output settings, reset report name to $output"
             }
         } else if (!format.isEmpty()) {
-            if (format == 'json') {
-                output = 'UsageReport.json'
+            if (format == REPORT_FORMAT_JSON) {
+                output = DEFAULT_REPORT_NAME + '.' + REPORT_FORMAT_JSON
                 path = Paths.get(output) 
                 log.info "Using default json report name $output"
             } else {
-                format = 'csv'
-                output = 'UsageReport.csv'
+                format = DEFAULT_REPORT_FORMAT
+                output = DEFAULT_OUTPUT
                 path = Paths.get(output) 
                 log.info "Using default csv report name $output"
             }
         } else {
-            if (output.endsWith('json')) {
-                format = 'json'
+            if (output.endsWith(REPORT_FORMAT_JSON)) {
+                format = REPORT_FORMAT_JSON
                 log.info "Report format is json"
-            } else if (output.endsWith('csv')) {
-                format = 'csv'
+            } else if (output.endsWith(REPORT_FORMAT_CSV)) {
+                format = REPORT_FORMAT_CSV
                 log.info "Report format is csv"
             } else {
-                format = 'csv'
-                output = 'UsageReport.csv'
+                format = DEFAULT_REPORT_FORMAT
+                output = DEFAULT_OUTPUT
                 path = Paths.get(output) 
                 log.info "Incorrect output setting, reset report name to $output"
             }
@@ -147,7 +153,7 @@ class NfGadiObserver implements TraceObserver {
     void onFlowBegin() {
         configCheck()
 
-        if(format == 'csv') {
+        if(format == REPORT_FORMAT_CSV) {
             List<String> headers = [
                 "Name",
                 "Process",
@@ -172,7 +178,7 @@ class NfGadiObserver implements TraceObserver {
     @Override
     void onFlowComplete() {
         
-        if(format == 'json'){
+        if(format == REPORT_FORMAT_JSON){
             Files.write(path, JsonOutput.prettyPrint(JsonOutput.toJson(results)).bytes)
         }      
 
@@ -300,7 +306,7 @@ class NfGadiObserver implements TraceObserver {
         }
 
         String process_name = handler.task.name
-        if(format == 'csv') {
+        if(format == REPORT_FORMAT_CSV) {
 
             List<String> row = [
                 process_name,
@@ -368,7 +374,7 @@ class NfGadiObserver implements TraceObserver {
         }
 
         String process_name = handler.task.name
-        if(format == 'csv') {
+        if(format == REPORT_FORMAT_CSV) {
 
             List<String> row = [
                 process_name,
