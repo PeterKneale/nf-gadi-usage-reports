@@ -2,10 +2,12 @@ package nci.plugin
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermissions
 import nextflow.Session
 import nextflow.processor.TaskHandler
 import nextflow.processor.TaskRun
 import nextflow.trace.TraceRecord
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 import spock.lang.TempDir
 
@@ -84,6 +86,27 @@ class NfGadiObserverProcessTest extends Specification {
         then:
         noExceptionThrown()   // was a NullPointerException
         report.readLines()[1] == "${tmp.resolve('never_run')},ALIGN (sample_3),ALIGN,normal,,,,,,,,,,,".toString()
+    }
+
+    @IgnoreIf({ System.getProperty('user.name') == 'root' })   // root can read anything
+    def "a task whose job log cannot be read is reported without usage values"() {
+        given: 'a job log with no read permission, e.g. a file system problem on /scratch'
+        Path workDir = tmp.resolve('unreadable')
+        Files.createDirectories(workDir)
+        Path log = Files.copy(scenario('tool_featurecounts').resolve('.command.log'), workDir.resolve('.command.log'))
+        Files.setPosixFilePermissions(log, PosixFilePermissions.fromString('---------'))
+
+        when:
+        observer.onProcessComplete(handler('COUNT (sample_1)'), trace(workDir))
+        observer.onProcessCached(handler('COUNT (sample_2)'), trace(workDir))
+
+        then:
+        noExceptionThrown()   // was an AccessDeniedException
+        report.readLines() == [
+            HEADER,
+            "${workDir},COUNT (sample_1),COUNT,normal,,,,,,,,,,,".toString(),
+            "${workDir},COUNT (sample_2),COUNT,normal,,,,,,,,,,,".toString(),
+        ]
     }
 
     def "cached task whose work directory was cleaned up is reported without usage values"() {

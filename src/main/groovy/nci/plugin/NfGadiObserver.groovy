@@ -74,7 +74,7 @@ class NfGadiObserver implements TraceObserver {
         }
 
         // A cached task finished in an earlier run, so its log is complete if it still exists
-        GadiUsageRecord usage = reader.read(workDir(trace))
+        GadiUsageRecord usage = readUsage(task) { reader.read(workDir(trace)) }
         report.recordTask(task, usage)
     }
 
@@ -87,8 +87,22 @@ class NfGadiObserver implements TraceObserver {
         }
 
         // The task has only just finished, so PBS may still be writing its log
-        GadiUsageRecord usage = reader.waitAndRead(workDir(trace))
+        GadiUsageRecord usage = readUsage(task) { reader.waitAndRead(workDir(trace)) }
         report.recordTask(task, usage)
+    }
+
+    /**
+     * Reads a task's usage, reporting the task without usage values if its
+     * log cannot be read, e.g. a permissions or file system error. The run
+     * itself is never affected by a problem with the report.
+     */
+    private static GadiUsageRecord readUsage(GadiTask task, Closure<GadiUsageRecord> read) {
+        try {
+            return read.call()
+        } catch (Exception e) {
+            log.warn "Cannot read the job log of ${task.name}, reporting this task without usage values: ${e}"
+            return new GadiUsageRecord()
+        }
     }
 
     @Override

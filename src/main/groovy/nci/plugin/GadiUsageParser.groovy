@@ -21,7 +21,7 @@ class GadiUsageParser {
     /** Keyed by {@link GadiUsageRecord} property name. */
     private static final Map<String, Pattern> FIELDS = [
         exitCode:          ~/Exit Status:\s+(-?\d+)/,
-        serviceUnits:      ~/Service Units:\s+(\d+\.\d+)/,
+        serviceUnits:      ~/Service Units:\s+(\d+(?:\.\d+)?)/,
         cpus:              ~/NCPUs Requested:\s+(\d+)/,
         cpuTime:           ~/CPU Time Used:\s+(\d+:\d{2}:\d{2})/,
         walltimeUsed:      ~/Walltime Used:\s+(\d+:\d{2}:\d{2})/,

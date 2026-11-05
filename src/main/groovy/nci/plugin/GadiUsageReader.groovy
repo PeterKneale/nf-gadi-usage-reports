@@ -42,6 +42,7 @@ class GadiUsageReader {
      *
      * @return the usage, with empty values if the job log is missing,
      *         e.g. because the work directory has been cleaned up
+     * @throws java.io.IOException if the job log exists but cannot be read
      */
     GadiUsageRecord read(Path workDir) {
         Path logFile = jobLog(workDir)
@@ -58,6 +59,7 @@ class GadiUsageReader {
      * complete.
      *
      * @return the usage, with empty values if the log never appeared
+     * @throws java.io.IOException if the job log exists but cannot be read
      */
     GadiUsageRecord waitAndRead(Path workDir) {
         Path logFile = jobLog(workDir)

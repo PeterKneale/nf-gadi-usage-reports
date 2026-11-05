@@ -75,6 +75,20 @@ class GadiUsageParserTest extends Specification {
         ]
     }
 
+    @Unroll
+    def "service units are read with or without decimals: #logged"() {
+        expect:
+        GadiUsageParser.parseText("   Service Units:      ${logged}").serviceUnits == new BigDecimal(logged)
+
+        where:
+        logged << [
+            '0.40',    // EXPECTED: as in every real log so far
+            '12.34',
+            '0',       // EXPECTED: whole number; was read as missing, which would have made the plugin wait the full 2 minutes
+            '1200',
+        ]
+    }
+
     def "walltime over 99 hours is read"() {
         given:
         def text = '   Walltime Requested: 120:00:00            Walltime Used: 100:30:00        '
