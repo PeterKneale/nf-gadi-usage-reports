@@ -20,6 +20,6 @@ install:
 release:
 	./gradlew releasePlugin
 
-# Build the command line tool: build/libs/gadi-usage-report-<version>.jar
+# Build the command line tool: build/libs/gadi-usage-report.jar
 cli:
 	./gradlew cliJar

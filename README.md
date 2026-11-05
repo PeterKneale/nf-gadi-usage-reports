@@ -177,7 +177,7 @@ It searches a folder and all its subfolders for Gadi job logs (`.command.log`), 
 
 ### Getting the tool
 
-Download `gadi-usage-report-1.0.0.jar` from the [releases page](https://github.com/peterkneale/nf-gadi-usage-reports/releases). It is a single self-contained file that can be copied to Gadi or anywhere else with Java.
+Download `gadi-usage-report.jar` from the [releases page](https://github.com/peterkneale/nf-gadi-usage-reports/releases). It is a single self-contained file that can be copied to Gadi or anywhere else with Java.
 
 Or build it from source:
 
@@ -187,15 +187,15 @@ cd nf-gadi-usage-reports
 make cli
 ```
 
-This builds `build/libs/gadi-usage-report-1.0.0.jar`.
+This builds `build/libs/gadi-usage-report.jar`.
 
 ### Running it
 
 Point it at a Nextflow work directory, a folder holding several runs' work directories, or any folder containing job logs:
 
 ```
-java -jar gadi-usage-report-1.0.0.jar /scratch/ab12/my_pipeline/work
-java -jar gadi-usage-report-1.0.0.jar /scratch/ab12/my_pipeline/runs
+java -jar gadi-usage-report.jar /scratch/ab12/my_pipeline/work
+java -jar gadi-usage-report.jar /scratch/ab12/my_pipeline/runs
 ```
 
 The reports are written to the current directory, replacing any from an earlier run there.
@@ -249,9 +249,9 @@ make install    # install it into your local Nextflow plugins folder
 make cli        # build the command line tool
 ```
 
-The parser is tested against real Gadi job logs in `src/test/resources/nci/plugin/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders.
+The parser is tested against real Gadi job logs in `src/test/resources/io/github/peterkneale/gadi/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders.
 
-The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/nci/plugin/cli/golden/`. The unit tests do this in-process; `make test` then runs the built jar the same way with `java -jar`, and checks that no Nextflow classes were bundled into it.
+The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/io/github/peterkneale/gadi/cli/golden/`. The unit tests do this in-process; `make test` then runs the built jar the same way with `java -jar`, and checks that no Nextflow classes were bundled into it.
 
 GitHub Actions runs the same checks on every push and pull request. Pushing a tag such as `v1.0.0`, matching the version in `build.gradle`, creates a GitHub release with the command line tool attached.
 
@@ -264,9 +264,9 @@ To add a scenario:
 
    ```
    make cli
-   JAR=$PWD/build/libs/gadi-usage-report-1.0.0.jar
-   (cd src/test/resources/nci/plugin/cli/golden && java -jar "$JAR" ../../scenarios)
-   git diff src/test/resources/nci/plugin/cli/golden
+   JAR=$PWD/build/libs/gadi-usage-report.jar
+   (cd src/test/resources/io/github/peterkneale/gadi/cli/golden && java -jar "$JAR" ../../scenarios)
+   git diff src/test/resources/io/github/peterkneale/gadi/cli/golden
    ```
 
 Raw, unanonymised logs can be kept in `src/test/data/`, which is ignored by git. Never commit them.

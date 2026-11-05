@@ -8,15 +8,15 @@ nextflowPlugin {
     nextflowVersion = '24.04.1'
 
     provider = 'peterkneale'
-    className = 'nci.plugin.NfGadiPlugin'
+    className = 'io.github.peterkneale.gadi.NfGadiPlugin'
     extensionPoints = [
-        'nci.plugin.NfGadiFactory'
+        'io.github.peterkneale.gadi.NfGadiFactory'
     ]
 }
 
 // The command line tool's classes ship in their own jar, see cliJar below
 tasks.named('jar', Jar) {
-    exclude 'nci/plugin/cli/**'
+    exclude 'io/github/peterkneale/gadi/cli/**'
 }
 
 // Command line tool: a self-contained jar that reports on existing job logs
@@ -36,12 +36,14 @@ tasks.register('cliJar', Jar) {
     group = 'build'
     description = 'Builds the gadi-usage-report command line tool as a runnable jar'
     archiveBaseName = 'gadi-usage-report'
+    archiveVersion = ''   // gadi-usage-report.jar, so the name is the same in every release
     manifest {
-        attributes 'Main-Class': 'nci.plugin.cli.GadiUsageReportCli'
+        attributes 'Main-Class': 'io.github.peterkneale.gadi.cli.GadiUsageReportCli',
+                   'Implementation-Version': project.version
     }
     from(sourceSets.main.output) {
         // Leave out the Nextflow plugin classes; the tool does not use them
-        exclude 'nci/plugin/NfGadi*', 'nci/plugin/GadiReportPublisher*', 'META-INF/extensions.idx', 'META-INF/MANIFEST.MF'
+        exclude 'io/github/peterkneale/gadi/NfGadi*', 'io/github/peterkneale/gadi/GadiReportPublisher*', 'META-INF/extensions.idx', 'META-INF/MANIFEST.MF'
     }
     from {
         configurations.cli.collect { it.isDirectory() ? it : zipTree(it) }
@@ -57,8 +59,8 @@ tasks.register('cliJar', Jar) {
 // without Nextflow. The unit tests call the tool in-process, so they would
 // not catch either.
 def cliCheckDir = layout.buildDirectory.dir('cli-check')
-def cliGolden = file('src/test/resources/nci/plugin/cli/golden')
-def cliScenarios = file('src/test/resources/nci/plugin/scenarios')
+def cliGolden = file('src/test/resources/io/github/peterkneale/gadi/cli/golden')
+def cliScenarios = file('src/test/resources/io/github/peterkneale/gadi/scenarios')
 
 tasks.register('checkCliJar', Exec) {
     group = 'verification'

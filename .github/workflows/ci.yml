@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gadi-usage-report
-          path: build/libs/gadi-usage-report-*.jar
+          path: build/libs/gadi-usage-report.jar
 
       - name: Upload the test report
         if: failure()
@@ -65,4 +65,4 @@ jobs:
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" build/libs/gadi-usage-report-*.jar --verify-tag --generate-notes
+        run: gh release create "${GITHUB_REF_NAME}" build/libs/gadi-usage-report.jar --verify-tag --generate-notes
