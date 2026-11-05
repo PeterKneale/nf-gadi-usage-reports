@@ -1,0 +1,26 @@
+TrimmomaticPE: Started with arguments:
+ -threads 12 -summary SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-2.summary SAMPLEBATCH00000000-1_SAMPLE-0000000000000-1-CHX-ABC-2_1.merged.fastq.gz SAMPLEBATCH00000000-1_SAMPLE-0000000000000-1-CHX-ABC-2_2.merged.fastq.gz SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-2.paired.trim_1.fastq.gz SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-2.unpaired.trim_1.fastq.gz SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-2.paired.trim_2.fastq.gz SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-2.unpaired.trim_2.fastq.gz ILLUMINACLIP:trimmomatic_nextera_adapter.fasta:1:37:6:6:true ILLUMINACLIP:trimmomatic_polyg_adapter.fasta:0:30:6 ILLUMINACLIP:trimmomatic_polya_adapter.fasta:0:30:6 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36 -phred33
+ILLUMINACLIP: Using adapter file from current working directory: /scratch/xx00/my_pipeline/runs/8d6b8c01-ca6a-405d-a718-740d9722eea5/work/f8/208177665d12154856305c6767e039/trimmomatic_nextera_adapter.fasta
+Using PrefixPair: 'AGATGTGTATAAGAGACAG' and 'AGATGTGTATAAGAGACAG'
+Using Short Clipping Sequence: 'CTGTCTCTTATA'
+ILLUMINACLIP: Using 1 prefix pairs, 1 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
+ILLUMINACLIP: Using adapter file from current working directory: /scratch/xx00/my_pipeline/runs/8d6b8c01-ca6a-405d-a718-740d9722eea5/work/f8/208177665d12154856305c6767e039/trimmomatic_polyg_adapter.fasta
+Using Short Clipping Sequence: 'GGGGGGGGGG'
+ILLUMINACLIP: Using 0 prefix pairs, 1 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
+ILLUMINACLIP: Using adapter file from current working directory: /scratch/xx00/my_pipeline/runs/8d6b8c01-ca6a-405d-a718-740d9722eea5/work/f8/208177665d12154856305c6767e039/trimmomatic_polya_adapter.fasta
+Using Short Clipping Sequence: 'AAAAAAAAAA'
+ILLUMINACLIP: Using 0 prefix pairs, 1 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
+Input Read Pairs: 275358995 Both Surviving: 261104034 (94.82%) Forward Only Surviving: 6533852 (2.37%) Reverse Only Surviving: 3595838 (1.31%) Dropped: 4125271 (1.50%)
+TrimmomaticPE: Completed successfully
+
+======================================================================================
+                  Resource Usage on 2026-10-30 19:57:50:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      35.07
+   NCPUs Requested:    12                  CPU Time Used: 06:56:02        
+   Memory Requested:   84.0GB                Memory Used: 44.37GB         
+   Walltime Requested: 05:00:00            Walltime Used: 00:50:06        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

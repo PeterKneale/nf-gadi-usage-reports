@@ -1,0 +1,19 @@
+	/opt/conda/bin/STAR-avx2 --genomeDir star --readFilesIn input1/SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-2.paired.trim_1.fastq.gz input2/SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-2.paired.trim_2.fastq.gz --runThreadN 24 --outFileNamePrefix SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-2. --readFilesCommand zcat --outSAMtype BAM Unsorted --outSAMattributes NH HI AS NM MD jM jI --outFilterMultimapNmax 20 --alignSJoverhangMin 6 --alignSJDBoverhangMin 6 --outFilterMismatchNmax 10 --outFilterMismatchNoverLmax 0.3 --alignIntronMin 21 --alignIntronMax 1000000 --alignMatesGapMax 0 --outFilterType BySJout --outFilterScoreMinOverLread 0.66 --outFilterMatchNminOverLread 0.66 --outSAMstrandField intronMotif --outFilterIntronMotifs None --alignSoftClipAtReferenceEnds Yes --peOverlapNbasesMin 10 --peOverlapMMp 0.1 --quantMode GeneCounts --outSAMunmapped Within --chimSegmentMin 12 --chimJunctionOverhangMin 12 --chimOutType Junctions --chimMainSegmentMultNmax 10 --chimMultimapNmax 20 --outSJfilterCountUniqueMin 3 1 1 1 --outSJfilterOverhangMin 6 6 6 6 --outSJfilterCountTotalMin 3 1 1 1 --outSJfilterDistToOtherSJmin 0 0 0 0 --outSJfilterIntronMaxVsReadN 1000000 --outSAMattrRGline ID:SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-2_total_lib.FLOWCELL0.NNNNNNNNNN-NNNNNNNNNN SM:SAMPLEBATCH00000000-1_SAMPLE-0000000000000-1-DMSO-ABC-2 LB:SAMPLE-0000000000000-1-DMSO-ABC-2_total_lib PL:ILLUMINA PU:FLOWCELL0.NNNNNNNNNN-NNNNNNNNNN
+	STAR version: 2.7.11b   compiled: 2025-01-09T12:32:06+0000 :/opt/conda/conda-bld/star_1736425784849/work/source
+Oct 31 10:08:51 ..... started STAR run
+Oct 31 10:08:51 ..... loading genome
+Oct 31 10:09:21 ..... started mapping
+Oct 31 10:45:02 ..... finished mapping
+Oct 31 10:45:05 ..... finished successfully
+
+======================================================================================
+                  Resource Usage on 2026-10-31 10:46:34:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      30.13
+   NCPUs Requested:    24                  CPU Time Used: 13:55:28        
+   Memory Requested:   84.0GB                Memory Used: 84.0GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:37:40        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

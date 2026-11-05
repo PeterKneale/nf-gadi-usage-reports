@@ -1,0 +1,26 @@
+java -ea  --add-modules jdk.incubator.vector -Xmx2g -Xms2g -cp /usr/local/opt/bbmap-39.91-0/current/ jgi.ReformatReads -Xmx2g verifypaired=t in1=input1/SAMPLE_000P_D_FLOWCELL0_NNNNNNNNNN-NNNNNNNNNN_L003_R1.fastq.gz in2=input2/SAMPLE_000P_D_FLOWCELL0_NNNNNNNNNN-NNNNNNNNNN_L003_R2.fastq.gz
+WARNING: Using incubator modules: jdk.incubator.vector
+Executing jgi.ReformatReads [-Xmx2g, verifypaired=t, in1=input1/SAMPLE_000P_D_FLOWCELL0_NNNNNNNNNN-NNNNNNNNNN_L003_R1.fastq.gz, in2=input2/SAMPLE_000P_D_FLOWCELL0_NNNNNNNNNN-NNNNNNNNNN_L003_R2.fastq.gz]
+
+No output stream specified.  To write to stdout, please specify 'out=stdout.fq' or similar.
+Set INTERLEAVED to false
+Input is being processed as paired
+Input:                  	369731604 reads          	55459740600 bases
+Output:                 	369731604 reads (100.00%) 	55459740600 bases (100.00%)
+
+Time:                         	790.033 seconds.
+Reads Processed:        369m 	468.00k reads/sec
+Bases Processed:      55459m 	70.20m bases/sec
+Names appear to be correctly paired.
+
+======================================================================================
+                  Resource Usage on 2026-10-31 13:24:33:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      1.54
+   NCPUs Requested:    2                   CPU Time Used: 00:09:08        
+   Memory Requested:   14.0GB                Memory Used: 14.0GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:13:13        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

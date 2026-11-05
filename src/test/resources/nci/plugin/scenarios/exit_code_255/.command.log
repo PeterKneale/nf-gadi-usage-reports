@@ -1,0 +1,13 @@
+FATAL:   container creation failed: mount /proc/self/fd/5->/opt/nci/singularity/3.11.3/var/singularity/mnt/session/rootfs error: while mounting image /proc/self/fd/5: failed to find loop device: could not attach image file to loop device: failed to attach loop device: transient error, please retry: resource temporarily unavailable
+
+======================================================================================
+                  Resource Usage on 2026-10-31 02:55:05:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        255
+   Service Units:      0.11
+   NCPUs Requested:    1                   CPU Time Used: 00:00:19        
+   Memory Requested:   6.0GB                 Memory Used: 14.75MB         
+   Walltime Requested: 05:00:00            Walltime Used: 00:02:15        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

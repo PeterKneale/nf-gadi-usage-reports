@@ -1,0 +1,28 @@
+
+Program:	regtools
+Version:	1.0.0
+Minimum junction anchor length: 0
+Minimum intron length: 21
+Maximum intron length: 500000
+Alignment: SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-1.post_clipping.coordinate_sorted.bam
+Output file: SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-1.extracted.junc
+
+
+Program:	regtools
+Version:	1.0.0
+Reference: assembly.fasta
+GTF: annotation.gtf
+Junctions: SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC-1.extracted.junc
+... [1293214 lines trimmed for test fixture] ...
+
+======================================================================================
+                  Resource Usage on 2026-10-31 01:52:31:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      10.31
+   NCPUs Requested:    6                   CPU Time Used: 00:22:06        
+   Memory Requested:   42.0GB                Memory Used: 26.94GB         
+   Walltime Requested: 05:00:00            Walltime Used: 00:29:28        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================
