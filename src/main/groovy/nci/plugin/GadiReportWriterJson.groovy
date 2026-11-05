@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 class GadiReportWriterJson extends GadiReportWriter {
 
     /** Each task's row, grouped by process name. */
-    final Map<String, List<Map<String, String>>> results = new ConcurrentHashMap<>()
+    final Map<String, List<Map<String, Object>>> results = new ConcurrentHashMap<>()
 
     static final String FILE_NAME = REPORT_NAME + '.json'
 
@@ -25,10 +25,10 @@ class GadiReportWriterJson extends GadiReportWriter {
     }
 
     @Override
-    protected void record(Map<String, String> row) {
-        results.compute(row.process) { String key, List<Map<String, String>> existingList ->
+    protected void record(Map<String, Object> row) {
+        results.compute(row.process as String) { String key, List<Map<String, Object>> existingList ->
             if (existingList == null) {
-                existingList = new ArrayList<Map<String, String>>()
+                existingList = new ArrayList<Map<String, Object>>()
             }
 
             synchronized (existingList) {
@@ -41,7 +41,7 @@ class GadiReportWriterJson extends GadiReportWriter {
     /** Writes the report, with processes listed by name so the order is the same every run. */
     @Override
     void finish() {
-        Map<String, List<Map<String, String>>> byProcessName = new TreeMap<>(results)
+        Map<String, List<Map<String, Object>>> byProcessName = new TreeMap<>(results)
         Files.write(path, JsonOutput.prettyPrint(JsonOutput.toJson(byProcessName)).bytes)
         super.finish()
     }

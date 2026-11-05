@@ -92,7 +92,7 @@ Values containing commas, such as task names with several tags, are quoted, so t
 
 ### JSON report
 
-The same fields, grouped by process. Processes are listed by name, so reports from the same tasks always come out in the same order:
+The same fields, grouped by process. Processes are listed by name, so reports from the same tasks always come out in the same order. Service units, CPUs, efficiency and the exit code are numbers; durations and sizes are text as Gadi logs them; a missing value is `null`:
 
 ```json
 {
@@ -102,8 +102,8 @@ The same fields, grouped by process. Processes are listed by name, so reports fr
             "name": "COUNT (sample_1)",
             "process": "COUNT",
             "queue": "normal",
-            "service_units": "0.40",
-            "cpus": "6",
+            "service_units": 0.40,
+            "cpus": 6,
             "cpu_time": "00:02:22",
             "used_walltime": "00:01:09",
             "requested_walltime": "05:00:00",
@@ -111,8 +111,8 @@ The same fields, grouped by process. Processes are listed by name, so reports fr
             "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.34",
-            "exit_code": "0"
+            "efficiency": 0.34,
+            "exit_code": 0
         }
     ]
 }

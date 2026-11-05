@@ -30,8 +30,8 @@ class GadiReportWriterCsv extends GadiReportWriter {
     }
 
     @Override
-    protected void record(Map<String, String> row) {
-        List<String> values = FIELDS.collect { String field -> row[field] }
+    protected void record(Map<String, Object> row) {
+        List<String> values = FIELDS.collect { String field -> text(row[field]) }
         append(Csv.line(values))
     }
 

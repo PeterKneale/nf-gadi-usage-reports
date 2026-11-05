@@ -127,8 +127,49 @@ class GadiReportWriterTest extends Specification {
         json.keySet() == ['COUNT'] as Set
         json.COUNT*.name == ['COUNT (sample_1)', 'COUNT (sample_2)']
         (json.COUNT[0] as Map).keySet() as List == GadiReportWriter.FIELDS   // the same fields as the CSV columns
-        json.COUNT[0].efficiency == '0.34'
+        json.COUNT[0].efficiency == 0.34
         json.COUNT[1].efficiency == null   // log could not be read
         json.COUNT*.work_dir == ['work/ab/cdef12', 'work/cd/ef3456']
+    }
+
+    def "JSON report: counts and amounts are numbers, durations and sizes are text"() {
+        given:
+        def writer = new GadiReportWriterJson(tmp)
+
+        when:
+        writer.start()
+        writer.recordTask(GadiTask.of('COUNT (sample_1)', 'normal', 'work/ab/cdef12'), FEATURECOUNTS)
+        writer.finish()
+        def task = (new JsonSlurper().parse(writer.path.toFile()) as Map).COUNT[0] as Map
+
+        then: 'as written, so a number keeps its decimals and text keeps its quotes'
+        writer.path.text.contains('"service_units": 0.40,')
+        writer.path.text.contains('"cpus": 6,')
+        writer.path.text.contains('"efficiency": 0.34,')
+        writer.path.text.contains('"exit_code": 0')
+        writer.path.text.contains('"cpu_time": "00:02:22",')
+        writer.path.text.contains('"used_memory": "10.89GB",')
+
+        and: 'as read back'
+        task.service_units instanceof Number
+        task.cpus instanceof Integer
+        task.efficiency instanceof Number
+        task.exit_code instanceof Integer
+        task.cpu_time instanceof String
+        task.used_memory instanceof String
+    }
+
+    def "a row's numbers come out the same in the CSV: #field"() {
+        expect:
+        GadiReportWriter.text(GadiReportWriter.row(GadiTask.of('COUNT (sample_1)'), FEATURECOUNTS)[field]) == csv
+
+        where:
+        field           || csv
+        'service_units' || '0.40'
+        'cpus'          || '6'
+        'efficiency'    || '0.34'
+        'exit_code'     || '0'
+        'cpu_time'      || '00:02:22'
+        'queue'         || null   // missing: written as an empty cell
     }
 }

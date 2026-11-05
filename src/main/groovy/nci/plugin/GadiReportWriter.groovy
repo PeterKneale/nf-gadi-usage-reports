@@ -2,6 +2,7 @@ package nci.plugin
 
 import groovy.transform.CompileStatic
 
+import java.math.RoundingMode
 import java.nio.file.Path
 import java.time.Duration
 
@@ -63,19 +64,23 @@ abstract class GadiReportWriter {
     }
 
     /** Records one task's row: its {@link #FIELDS}, in order. */
-    protected abstract void record(Map<String, String> row)
+    protected abstract void record(Map<String, Object> row)
 
-    /** A task's report values, keyed and ordered as {@link #FIELDS}. */
-    static Map<String, String> row(GadiTask task, GadiUsageRecord usage) {
+    /**
+     * A task's report values, keyed and ordered as {@link #FIELDS}. Counts
+     * and amounts are numbers, so the JSON report writes them as numbers;
+     * durations and sizes are text as Gadi logs them. Missing values are null.
+     */
+    static Map<String, Object> row(GadiTask task, GadiUsageRecord usage) {
         Double efficiency = GadiEfficiencyCalculator.calculate(usage)
 
-        Map<String, String> row = [
+        Map<String, Object> row = [
             work_dir:           task.workDir,
             name:               task.name,
             process:            task.process,
             queue:              task.queue,
-            service_units:      usage.serviceUnits?.toPlainString(),
-            cpus:               usage.cpus?.toString(),
+            service_units:      usage.serviceUnits,
+            cpus:               usage.cpus,
             cpu_time:           format(usage.cpuTime),
             used_walltime:      format(usage.walltimeUsed),
             requested_walltime: format(usage.walltimeRequested),
@@ -83,10 +88,18 @@ abstract class GadiReportWriter {
             requested_memory:   usage.memoryRequested?.toString(),
             used_jobfs:         usage.jobfsUsed?.toString(),
             requested_jobfs:    usage.jobfsRequested?.toString(),
-            efficiency:         efficiency == null ? null : String.format('%.2f', efficiency),
-            exit_code:          usage.exitCode?.toString(),
-        ] as LinkedHashMap<String, String>
+            efficiency:         efficiency == null ? null : BigDecimal.valueOf(efficiency).setScale(2, RoundingMode.HALF_UP),
+            exit_code:          usage.exitCode,
+        ] as LinkedHashMap<String, Object>
         return row
+    }
+
+    /** A row value as text for the CSV report: empty when missing, numbers without exponents. */
+    static String text(Object value) {
+        if (value == null) {
+            return null
+        }
+        return value instanceof BigDecimal ? value.toPlainString() : value.toString()
     }
 
     /** Formats a duration as Gadi logs it, e.g. "13:55:28". */

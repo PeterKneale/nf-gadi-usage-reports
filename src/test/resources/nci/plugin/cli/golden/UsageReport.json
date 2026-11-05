@@ -5,8 +5,8 @@
             "name": "exit_code_255",
             "process": "exit_code_255",
             "queue": null,
-            "service_units": "0.11",
-            "cpus": "1",
+            "service_units": 0.11,
+            "cpus": 1,
             "cpu_time": "00:00:19",
             "used_walltime": "00:02:15",
             "requested_walltime": "05:00:00",
@@ -14,8 +14,8 @@
             "requested_memory": "6.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.14",
-            "exit_code": "255"
+            "efficiency": 0.14,
+            "exit_code": 255
         }
     ],
     "exit_code_negative": [
@@ -24,8 +24,8 @@
             "name": "exit_code_negative",
             "process": "exit_code_negative",
             "queue": null,
-            "service_units": "0.11",
-            "cpus": "1",
+            "service_units": 0.11,
+            "cpus": 1,
             "cpu_time": "00:00:19",
             "used_walltime": "00:02:15",
             "requested_walltime": "05:00:00",
@@ -33,8 +33,8 @@
             "requested_memory": "6.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.14",
-            "exit_code": "-29"
+            "efficiency": 0.14,
+            "exit_code": -29
         }
     ],
     "tool_bcftools": [
@@ -43,8 +43,8 @@
             "name": "tool_bcftools",
             "process": "tool_bcftools",
             "queue": null,
-            "service_units": "3.00",
-            "cpus": "6",
+            "service_units": 3.00,
+            "cpus": 6,
             "cpu_time": "00:08:49",
             "used_walltime": "00:08:35",
             "requested_walltime": "05:00:00",
@@ -52,8 +52,8 @@
             "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.17",
-            "exit_code": "0"
+            "efficiency": 0.17,
+            "exit_code": 0
         }
     ],
     "tool_bedtools": [
@@ -62,8 +62,8 @@
             "name": "tool_bedtools",
             "process": "tool_bedtools",
             "queue": null,
-            "service_units": "0.07",
-            "cpus": "2",
+            "service_units": 0.07,
+            "cpus": 2,
             "cpu_time": "00:00:00",
             "used_walltime": "00:00:36",
             "requested_walltime": "05:00:00",
@@ -71,8 +71,8 @@
             "requested_memory": "14.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.00",
-            "exit_code": "0"
+            "efficiency": 0.00,
+            "exit_code": 0
         }
     ],
     "tool_fastqc": [
@@ -81,8 +81,8 @@
             "name": "tool_fastqc",
             "process": "tool_fastqc",
             "queue": null,
-            "service_units": "5.31",
-            "cpus": "2",
+            "service_units": 5.31,
+            "cpus": 2,
             "cpu_time": "01:20:16",
             "used_walltime": "00:45:31",
             "requested_walltime": "05:00:00",
@@ -90,8 +90,8 @@
             "requested_memory": "14.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.88",
-            "exit_code": "0"
+            "efficiency": 0.88,
+            "exit_code": 0
         }
     ],
     "tool_featurecounts": [
@@ -100,8 +100,8 @@
             "name": "tool_featurecounts",
             "process": "tool_featurecounts",
             "queue": null,
-            "service_units": "0.40",
-            "cpus": "6",
+            "service_units": 0.40,
+            "cpus": 6,
             "cpu_time": "00:02:22",
             "used_walltime": "00:01:09",
             "requested_walltime": "05:00:00",
@@ -109,8 +109,8 @@
             "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.34",
-            "exit_code": "0"
+            "efficiency": 0.34,
+            "exit_code": 0
         }
     ],
     "tool_multiqc": [
@@ -119,8 +119,8 @@
             "name": "tool_multiqc",
             "process": "tool_multiqc",
             "queue": null,
-            "service_units": "0.16",
-            "cpus": "1",
+            "service_units": 0.16,
+            "cpus": 1,
             "cpu_time": "00:01:07",
             "used_walltime": "00:03:12",
             "requested_walltime": "05:00:00",
@@ -128,8 +128,8 @@
             "requested_memory": "6.0GB",
             "used_jobfs": "9.79MB",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.35",
-            "exit_code": "0"
+            "efficiency": 0.35,
+            "exit_code": 0
         }
     ],
     "tool_picard": [
@@ -138,8 +138,8 @@
             "name": "tool_picard",
             "process": "tool_picard",
             "queue": null,
-            "service_units": "115.15",
-            "cpus": "24",
+            "service_units": 115.15,
+            "cpus": 24,
             "cpu_time": "02:46:15",
             "used_walltime": "02:23:56",
             "requested_walltime": "05:00:00",
@@ -147,8 +147,8 @@
             "requested_memory": "84.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.05",
-            "exit_code": "0"
+            "efficiency": 0.05,
+            "exit_code": 0
         }
     ],
     "tool_reformat": [
@@ -157,8 +157,8 @@
             "name": "tool_reformat",
             "process": "tool_reformat",
             "queue": null,
-            "service_units": "1.54",
-            "cpus": "2",
+            "service_units": 1.54,
+            "cpus": 2,
             "cpu_time": "00:09:08",
             "used_walltime": "00:13:13",
             "requested_walltime": "05:00:00",
@@ -166,8 +166,8 @@
             "requested_memory": "14.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.35",
-            "exit_code": "0"
+            "efficiency": 0.35,
+            "exit_code": 0
         }
     ],
     "tool_regtools": [
@@ -176,8 +176,8 @@
             "name": "tool_regtools",
             "process": "tool_regtools",
             "queue": null,
-            "service_units": "10.31",
-            "cpus": "6",
+            "service_units": 10.31,
+            "cpus": 6,
             "cpu_time": "00:22:06",
             "used_walltime": "00:29:28",
             "requested_walltime": "05:00:00",
@@ -185,8 +185,8 @@
             "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.13",
-            "exit_code": "0"
+            "efficiency": 0.13,
+            "exit_code": 0
         }
     ],
     "tool_samtools": [
@@ -195,8 +195,8 @@
             "name": "tool_samtools",
             "process": "tool_samtools",
             "queue": null,
-            "service_units": "17.24",
-            "cpus": "6",
+            "service_units": 17.24,
+            "cpus": 6,
             "cpu_time": "02:26:57",
             "used_walltime": "00:49:16",
             "requested_walltime": "05:00:00",
@@ -204,8 +204,8 @@
             "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.50",
-            "exit_code": "0"
+            "efficiency": 0.50,
+            "exit_code": 0
         }
     ],
     "tool_star": [
@@ -214,8 +214,8 @@
             "name": "tool_star",
             "process": "tool_star",
             "queue": null,
-            "service_units": "30.13",
-            "cpus": "24",
+            "service_units": 30.13,
+            "cpus": 24,
             "cpu_time": "13:55:28",
             "used_walltime": "00:37:40",
             "requested_walltime": "05:00:00",
@@ -223,8 +223,8 @@
             "requested_memory": "84.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.92",
-            "exit_code": "0"
+            "efficiency": 0.92,
+            "exit_code": 0
         }
     ],
     "tool_trimmomatic": [
@@ -233,8 +233,8 @@
             "name": "tool_trimmomatic",
             "process": "tool_trimmomatic",
             "queue": null,
-            "service_units": "35.07",
-            "cpus": "12",
+            "service_units": 35.07,
+            "cpus": 12,
             "cpu_time": "06:56:02",
             "used_walltime": "00:50:06",
             "requested_walltime": "05:00:00",
@@ -242,8 +242,8 @@
             "requested_memory": "84.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.69",
-            "exit_code": "0"
+            "efficiency": 0.69,
+            "exit_code": 0
         }
     ]
 }

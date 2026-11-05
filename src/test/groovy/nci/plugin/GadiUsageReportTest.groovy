@@ -35,7 +35,7 @@ class GadiUsageReportTest extends Specification {
         csv[1].startsWith('work/ab/cdef12,ALIGN (sample_1),ALIGN,normal,')
         csv[2].startsWith(',LOCAL_STEP (sample_1),LOCAL_STEP,')   // no work dir given
         json.ALIGN*.name == ['ALIGN (sample_1)']
-        json.ALIGN[0].efficiency == '0.50'
+        json.ALIGN[0].efficiency == 0.50
         json.LOCAL_STEP*.name == ['LOCAL_STEP (sample_1)']
     }
 }
