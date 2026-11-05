@@ -249,6 +249,16 @@ make install    # install it into your local Nextflow plugins folder
 make cli        # build the command line tool
 ```
 
+The code has two entry points that share everything else, under `src/main/groovy/io/github/peterkneale/gadi/`:
+
+| Package  | Contents                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| `plugin` | The Nextflow plugin: entry point, observer factory, observer and report publisher                  |
+| `cli`    | The command line tool, and the reader of the task details Nextflow leaves in each work directory   |
+| (root)   | Shared by both: the job log parser, usage record, efficiency calculator, report and report writers |
+
+Only `plugin` depends on Nextflow; the command line jar leaves it out.
+
 The parser is tested against real Gadi job logs in `src/test/resources/io/github/peterkneale/gadi/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders.
 
 The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/io/github/peterkneale/gadi/cli/golden/`. The unit tests do this in-process; `make test` then runs the built jar the same way with `java -jar`, and checks that no Nextflow classes were bundled into it.

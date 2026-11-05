@@ -8,9 +8,9 @@ nextflowPlugin {
     nextflowVersion = '24.04.1'
 
     provider = 'peterkneale'
-    className = 'io.github.peterkneale.gadi.NfGadiPlugin'
+    className = 'io.github.peterkneale.gadi.plugin.NfGadiPlugin'
     extensionPoints = [
-        'io.github.peterkneale.gadi.NfGadiFactory'
+        'io.github.peterkneale.gadi.plugin.NfGadiFactory'
     ]
 }
 
@@ -43,7 +43,7 @@ tasks.register('cliJar', Jar) {
     }
     from(sourceSets.main.output) {
         // Leave out the Nextflow plugin classes; the tool does not use them
-        exclude 'io/github/peterkneale/gadi/NfGadi*', 'io/github/peterkneale/gadi/GadiReportPublisher*', 'META-INF/extensions.idx', 'META-INF/MANIFEST.MF'
+        exclude 'io/github/peterkneale/gadi/plugin/**', 'META-INF/extensions.idx', 'META-INF/MANIFEST.MF'
     }
     from {
         configurations.cli.collect { it.isDirectory() ? it : zipTree(it) }
@@ -80,9 +80,9 @@ tasks.register('checkCliJar', Exec) {
         delete dir
         dir.mkdirs()
         new java.util.zip.ZipFile(jar.get().asFile).withCloseable { zip ->
-            def bundled = zip.entries().findAll { it.name.startsWith('nextflow/') }*.name
+            def bundled = zip.entries().findAll { it.name.startsWith('nextflow/') || it.name.startsWith('io/github/peterkneale/gadi/plugin/') }*.name
             if (bundled) {
-                throw new GradleException("The command line tool must not bundle Nextflow, but the jar holds ${bundled.size()} nextflow/ entries, e.g. ${bundled[0]}")
+                throw new GradleException("The command line tool must not bundle Nextflow or the plugin, but the jar holds ${bundled.size()} such entries, e.g. ${bundled[0]}")
             }
         }
     }

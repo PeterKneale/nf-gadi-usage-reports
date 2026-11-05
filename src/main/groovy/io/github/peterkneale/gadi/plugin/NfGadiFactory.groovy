@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
 
 import groovy.transform.CompileStatic
 import nextflow.Session

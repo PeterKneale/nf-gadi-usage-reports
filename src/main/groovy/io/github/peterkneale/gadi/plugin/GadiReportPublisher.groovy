@@ -1,4 +1,4 @@
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j

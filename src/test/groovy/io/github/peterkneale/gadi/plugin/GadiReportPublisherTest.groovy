@@ -1,4 +1,4 @@
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
 
 import java.nio.file.Files
 import java.nio.file.Path

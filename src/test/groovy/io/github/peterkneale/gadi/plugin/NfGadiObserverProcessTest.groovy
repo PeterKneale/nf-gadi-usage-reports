@@ -1,4 +1,6 @@
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
+
+import io.github.peterkneale.gadi.GadiUsageReader
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -58,7 +60,7 @@ class NfGadiObserverProcessTest extends Specification {
     }
 
     private static Path scenarios() {
-        Path.of(NfGadiObserverProcessTest.getResource('scenarios').toURI())
+        Path.of(NfGadiObserverProcessTest.getResource('/io/github/peterkneale/gadi/scenarios').toURI())
     }
 
     private static Path scenario(String name) {

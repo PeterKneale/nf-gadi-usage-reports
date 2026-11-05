@@ -1,4 +1,4 @@
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
 
 import nextflow.Session
 import spock.lang.Specification

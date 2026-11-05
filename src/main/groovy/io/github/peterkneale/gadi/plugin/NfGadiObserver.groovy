@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package io.github.peterkneale.gadi
+package io.github.peterkneale.gadi.plugin
+
+import io.github.peterkneale.gadi.GadiTask
+import io.github.peterkneale.gadi.GadiUsageReader
+import io.github.peterkneale.gadi.GadiUsageRecord
+import io.github.peterkneale.gadi.GadiUsageReport
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
