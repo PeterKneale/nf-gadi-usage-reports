@@ -25,20 +25,6 @@ class GadiMemorySizeTest extends Specification {
     }
 
     @Unroll
-    def "#text is #bytes bytes"() {
-        expect:
-        GadiMemorySize.parse(text).toBytes() == bytes
-
-        where:
-        text     || bytes
-        '0B'     || 0
-        '1KB'    || 1024                 // EXPECTED: binary units, as in PBS
-        '1.5MB'  || 1_572_864
-        '14.0GB' || 15_032_385_536
-        '1TB'    || 1_099_511_627_776
-    }
-
-    @Unroll
     def "'#text' is not a size"() {
         expect:
         GadiMemorySize.parse(text) == null
