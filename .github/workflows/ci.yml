@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  build:
+    name: Test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # check runs the unit tests and checks the built command line tool
+      - name: Test and build
+        run: ./gradlew check assemble cliJar
+
+      - name: Upload the command line tool
+        uses: actions/upload-artifact@v4
+        with:
+          name: gadi-usage-report
+          path: build/libs/gadi-usage-report-*.jar
+
+      - name: Upload the test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test
+
+  # Pushing a tag such as v1.0.0 creates a GitHub release with the command
+  # line tool attached, so users can download it without building it.
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the version in build.gradle
+        run: |
+          version=$(sed -n "s/^version = '\(.*\)'/\1/p" build.gradle)
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match version ${version} in build.gradle"
+            exit 1
+          fi
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: gadi-usage-report
+          path: build/libs
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" build/libs/gadi-usage-report-*.jar --verify-tag --generate-notes

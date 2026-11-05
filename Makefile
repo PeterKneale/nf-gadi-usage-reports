@@ -8,9 +8,9 @@ clean:
 	rm -rf build
 	./gradlew clean
 
-# Run plugin unit tests
+# Run the unit tests, then check the built command line tool against the golden reports
 test:
-	./gradlew test
+	./gradlew check
 
 # Install the plugin into local nextflow plugins dir
 install:

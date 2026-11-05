@@ -45,3 +45,50 @@ tasks.register('cliJar', Jar) {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+// Checks the command line tool as users run it: java -jar on the built jar,
+// against the scenario logs, comparing its reports with the golden copies.
+// Also checks that no Nextflow classes were bundled, since the tool must run
+// without Nextflow. The unit tests call the tool in-process, so they would
+// not catch either.
+def cliCheckDir = layout.buildDirectory.dir('cli-check')
+def cliGolden = file('src/test/resources/nci/plugin/cli/golden')
+def cliScenarios = file('src/test/resources/nci/plugin/scenarios')
+
+tasks.register('checkCliJar', Exec) {
+    group = 'verification'
+    description = 'Runs the built gadi-usage-report jar against the scenario logs and compares its reports with the golden copies'
+    dependsOn 'cliJar'
+    def jar = tasks.named('cliJar', Jar).flatMap { it.archiveFile }
+    inputs.file(jar)
+    inputs.dir(cliScenarios)
+    inputs.dir(cliGolden)
+    outputs.dir(cliCheckDir)
+
+    workingDir = cliCheckDir
+    commandLine 'java', '-jar', jar.get().asFile.absolutePath, cliScenarios.absolutePath
+
+    doFirst {
+        def dir = cliCheckDir.get().asFile
+        delete dir
+        dir.mkdirs()
+        new java.util.zip.ZipFile(jar.get().asFile).withCloseable { zip ->
+            def bundled = zip.entries().findAll { it.name.startsWith('nextflow/') }*.name
+            if (bundled) {
+                throw new GradleException("The command line tool must not bundle Nextflow, but the jar holds ${bundled.size()} nextflow/ entries, e.g. ${bundled[0]}")
+            }
+        }
+    }
+    doLast {
+        ['UsageReport.csv', 'UsageReport.json'].each { name ->
+            def written = cliCheckDir.get().file(name).asFile
+            if (written.text != new File(cliGolden, name).text) {
+                throw new GradleException("${name} written by the jar differs from the golden copy ${new File(cliGolden, name)}: diff ${written} ${new File(cliGolden, name)}")
+            }
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn 'checkCliJar'
+}

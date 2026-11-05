@@ -173,7 +173,11 @@ The `gadi-usage-report` command line tool writes the same two reports for job lo
 
 It searches a folder and all its subfolders for Gadi job logs (`.command.log`), and writes one `UsageReport.csv` and one `UsageReport.json` to the current directory, covering every log it finds. The folder can hold any number of pipeline runs, so one report can cover every task of every run.
 
-### Building the tool
+### Getting the tool
+
+Download `gadi-usage-report-1.0.0.jar` from the [releases page](https://github.com/peterkneale/nf-gadi-usage-reports/releases). It is a single self-contained file that can be copied to Gadi or anywhere else with Java.
+
+Or build it from source:
 
 ```
 git clone https://github.com/peterkneale/nf-gadi-usage-reports.git
@@ -181,7 +185,7 @@ cd nf-gadi-usage-reports
 make cli
 ```
 
-This builds `build/libs/gadi-usage-report-1.0.0.jar`, a single self-contained file that can be copied to Gadi or anywhere else with Java.
+This builds `build/libs/gadi-usage-report-1.0.0.jar`.
 
 ### Running it
 
@@ -230,7 +234,7 @@ If a work directory has a job log but no job script, for example when only the l
 Build and test the plugin with:
 
 ```
-make test       # run the unit tests
+make test       # run the unit tests, then check the built command line tool
 make assemble   # build the plugin
 make install    # install it into your local Nextflow plugins folder
 make cli        # build the command line tool
@@ -238,7 +242,9 @@ make cli        # build the command line tool
 
 The parser is tested against real Gadi job logs in `src/test/resources/nci/plugin/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders.
 
-The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/nci/plugin/cli/golden/`.
+The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/nci/plugin/cli/golden/`. The unit tests do this in-process; `make test` then runs the built jar the same way with `java -jar`, and checks that no Nextflow classes were bundled into it.
+
+GitHub Actions runs the same checks on every push and pull request. Pushing a tag such as `v1.0.0`, matching the version in `build.gradle`, creates a GitHub release with the command line tool attached.
 
 To add a scenario:
 
