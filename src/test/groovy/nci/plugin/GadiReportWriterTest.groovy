@@ -75,6 +75,19 @@ class GadiReportWriterTest extends Specification {
         ]
     }
 
+    def "CSV report: CPU time over 99 hours is written as logged"() {
+        given:
+        def writer = new GadiReportWriterCsv(tmp)
+        def usage = new GadiUsage(cpus: 48, cpuTime: hms('144:12:30'), walltimeUsed: hms('03:00:16'))
+
+        when:
+        writer.start()
+        writer.recordTask('ALIGN (sample_1)', usage, 'normal')
+
+        then: '144:12:30 CPU over 3:00:16 wall on 48 CPUs = 519150 / (10816 x 48) = 1.00'
+        writer.path.readLines()[1] == 'ALIGN (sample_1),ALIGN,normal,,48,144:12:30,03:00:16,,,,,,1.00,'
+    }
+
     def "JSON report: written on finish, grouped by process, keeping the field order"() {
         given:
         def writer = new GadiReportWriterJson(tmp)
