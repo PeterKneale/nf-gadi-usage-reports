@@ -70,9 +70,9 @@ Because the CSV report is written as the pipeline runs, it keeps the rows writte
 
 ### CSV columns
 
-| Column               | Description                        |
-| -------------------- | ---------------------------------- |
-| `work_dir`           | The task's work directory          |
+| Column               | Description                                                          |
+| -------------------- | -------------------------------------------------------------------- |
+| `work_dir`           | The task's work directory, relative to the run's work directory      |
 | `name`               | Task name, e.g. `ALIGN (sample_1)` |
 | `process`            | Process name, e.g. `ALIGN`         |
 | `queue`              | Gadi queue the job ran in          |
@@ -90,6 +90,8 @@ Because the CSV report is written as the pipeline runs, it keeps the rows writte
 
 Values containing commas, such as task names with several tags, are quoted, so the file opens correctly in spreadsheet tools.
 
+`work_dir` is relative to the run's work directory (`work` by default, or the `-work-dir` option), such as `94/348cfc33f75979f408e9e9d20d4d6e`, and absolute for a task whose work directory is somewhere else. It tells apart tasks with the same name, and shows where to find each task's logs.
+
 ### JSON report
 
 The same fields, grouped by process. Processes are listed by name, so reports from the same tasks always come out in the same order. Service units, CPUs, efficiency and the exit code are numbers; durations and sizes are text as Gadi logs them; a missing value is `null`:
@@ -98,7 +100,7 @@ The same fields, grouped by process. Processes are listed by name, so reports fr
 {
     "COUNT": [
         {
-            "work_dir": "/scratch/ab12/my_pipeline/work/94/348cfc33f75979f408e9e9d20d4d6e",
+            "work_dir": "94/348cfc33f75979f408e9e9d20d4d6e",
             "name": "COUNT (sample_1)",
             "process": "COUNT",
             "queue": "normal",
@@ -134,8 +136,8 @@ Efficiency is left empty when the CPU time, walltime or CPU count is missing, or
 
 When a job finishes, Gadi's PBS appends a Resource Usage block to the job's output, which Nextflow keeps as `.command.log` in the task's work directory. The plugin reads the values from that block.
 
-- **Waiting for the log:** PBS writes the block shortly after the job ends, so the plugin waits up to 2 minutes for it to appear and be complete.
-- **Missing logs:** if the log never appears, the task is still reported, with its usage values left empty, and a warning is logged.
+- **Waiting for the log:** PBS writes the block shortly after the job ends, so the plugin waits up to 2 minutes for it to appear and be complete. It waits in the background, so the pipeline is not held up. When the pipeline finishes, the plugin waits for any logs still outstanding before writing the JSON report.
+- **Missing or unreadable logs:** if the log never appears, or cannot be read, the task is still reported, with its usage values left empty, and a warning is logged.
 - **Cached tasks:** when a pipeline is resumed with `-resume`, cached tasks are reported from the log in their existing work directory. If that directory has been cleaned up, the task is reported without usage values.
 - **Tasks not run on Gadi:** tasks run by another executor, such as `local`, are reported with their name only.
 
@@ -219,9 +221,16 @@ The exit code is `0` on success, `1` if no job logs were found or any could not 
 
 Each task is reported as Nextflow named it, such as `MAIN:ALIGN (sample_1)`, read from the job script (`.command.run`) Nextflow writes in every work directory. The `process` and `queue` columns come from the same file, so tasks are named and grouped exactly as the plugin reports them.
 
-The `work_dir` column holds each task's work directory relative to the folder searched, such as `run1/94/348cfc33f75979f408e9e9d20d4d6e`. It tells apart tasks with the same name from different runs, and shows where to find each task's logs.
+The task name is read from the header Nextflow 24.04 and later write at the top of the job script:
 
-If a work directory has a job log but no job script, for example when only the logs were copied, the task is named by its work directory instead.
+```
+### ---
+### name: 'MAIN:ALIGN (sample_1)'
+```
+
+If a work directory has a job log but no job script, or the job script has no such header because an older Nextflow wrote it, the task is named by its work directory instead.
+
+The `work_dir` column holds each task's work directory relative to the folder searched, such as `run1/94/348cfc33f75979f408e9e9d20d4d6e`. It tells apart tasks with the same name from different runs, and shows where to find each task's logs. Pointed at a run's work directory, the tool reports the same `work_dir` values as the plugin.
 
 ## Switching from nf-gadi
 

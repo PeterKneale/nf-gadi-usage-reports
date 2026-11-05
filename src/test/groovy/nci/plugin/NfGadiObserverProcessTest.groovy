@@ -13,6 +13,10 @@ import spock.lang.TempDir
 
 /**
  * Drives the observer end to end, writing real reports to a temporary folder.
+ *
+ * A task that finishes during the run is recorded in the background, once
+ * its log has been read, so a test completes the run with onFlowComplete()
+ * before reading the reports.
  */
 class NfGadiObserverProcessTest extends Specification {
 
@@ -27,10 +31,18 @@ class NfGadiObserverProcessTest extends Specification {
 
     def setup() {
         report = tmp.resolve('UsageReport.csv')
-        def config = [gadi: [publishTo: tmp.resolve('published').toString()]]
-        def fastReader = new GadiUsageReader(1, 3)   // keep the wait loops fast
-        observer = new NfGadiObserver(Stub(Session) { getConfig() >> config }, tmp, fastReader)
+        observer = observer(new GadiUsageReader(1, 3))   // keep the wait loops fast
         observer.onFlowBegin()            // writes the CSV header
+    }
+
+    /** An observer for a run whose work directory is the scenarios folder, writing to tmp and publishing to tmp/published. */
+    private NfGadiObserver observer(GadiUsageReader reader) {
+        def config = [gadi: [publishTo: tmp.resolve('published').toString()]]
+        def session = Stub(Session) {
+            getConfig() >> config
+            getWorkDir() >> scenarios()
+        }
+        return new NfGadiObserver(session, tmp, reader)
     }
 
     private TaskHandler handler(String name) {
@@ -45,24 +57,75 @@ class NfGadiObserverProcessTest extends Specification {
         }
     }
 
+    private static Path scenarios() {
+        Path.of(NfGadiObserverProcessTest.getResource('scenarios').toURI())
+    }
+
     private static Path scenario(String name) {
-        Path.of(NfGadiObserverProcessTest.getResource("scenarios/${name}").toURI())
+        scenarios().resolve(name)
     }
 
     def "completed task with a job log is reported with its usage values"() {
         when:
         observer.onProcessComplete(handler('COUNT (sample_1)'), trace(scenario('tool_featurecounts')))
+        observer.onFlowComplete()
 
         then:
         report.readLines() == [
             HEADER,
-            "${scenario('tool_featurecounts')},COUNT (sample_1),COUNT,normal,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0".toString(),
+            'tool_featurecounts,COUNT (sample_1),COUNT,normal,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0',
         ]
+    }
+
+    def "work_dir is relative to the run's work directory, or absolute for a task somewhere else"() {
+        when:
+        observer.onProcessCached(handler('ALIGN (sample_1)'), trace(scenario('tool_star')))
+        observer.onProcessCached(handler('ALIGN (sample_2)'), trace(tmp.resolve('elsewhere/ab/cdef12')))
+
+        then: 'as the command line tool reports them when pointed at the run\'s work directory'
+        report.readLines()*.split(',')*.getAt(0) == ['work_dir', 'tool_star', tmp.resolve('elsewhere/ab/cdef12').toString()]
+    }
+
+    def "onProcessComplete returns at once, so waiting for a job log does not hold up the pipeline"() {
+        given: 'a reader that waits two seconds for a log that never appears'
+        def observer = observer(new GadiUsageReader(100, 2_000))
+        observer.onFlowBegin()
+
+        when:
+        long start = System.currentTimeMillis()
+        observer.onProcessComplete(handler('ALIGN (sample_1)'), trace(tmp.resolve('no_log_yet')))
+        long returned = System.currentTimeMillis() - start
+        observer.onFlowComplete()
+        long completed = System.currentTimeMillis() - start
+
+        then: 'the wait happened between the two calls, and the run waited for it before finishing'
+        returned < 1_000
+        completed >= 2_000
+        report.readLines()[1] == "${tmp.resolve('no_log_yet')},ALIGN (sample_1),ALIGN,normal,,,,,,,,,,,".toString()
+    }
+
+    def "a job log written after the task finished is still read, and the task reported with its usage values"() {
+        given:
+        def observer = observer(new GadiUsageReader(50, 5_000))
+        observer.onFlowBegin()
+        Path workDir = tmp.resolve('late')
+        Files.createDirectories(workDir)
+
+        when: 'PBS writes the log a little after Nextflow saw the task finish'
+        observer.onProcessComplete(handler('COUNT (sample_1)'), trace(workDir))
+        sleep(200)
+        Files.copy(scenario('tool_featurecounts').resolve('.command.log'), workDir.resolve('.command.log'))
+        observer.onFlowComplete()
+
+        then:
+        report.readLines()[1] ==
+            "${workDir},COUNT (sample_1),COUNT,normal,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0".toString()
     }
 
     def "completed task whose job log never appears is reported without usage values"() {
         when:
         observer.onProcessComplete(handler('ALIGN (sample_1, lane2)'), trace(tmp.resolve('no_such_workdir')))
+        observer.onFlowComplete()
 
         then:
         noExceptionThrown()   // was a NoSuchFileException
@@ -97,8 +160,9 @@ class NfGadiObserverProcessTest extends Specification {
         Files.setPosixFilePermissions(log, PosixFilePermissions.fromString('---------'))
 
         when:
-        observer.onProcessComplete(handler('COUNT (sample_1)'), trace(workDir))
-        observer.onProcessCached(handler('COUNT (sample_2)'), trace(workDir))
+        observer.onProcessCached(handler('COUNT (sample_1)'), trace(workDir))
+        observer.onProcessComplete(handler('COUNT (sample_2)'), trace(workDir))
+        observer.onFlowComplete()
 
         then:
         noExceptionThrown()   // was an AccessDeniedException

@@ -20,7 +20,8 @@ class NextflowTaskScript {
 
     /**
      * The task name from the header line {@code ### name: '...'}, e.g.
-     * "WORKFLOW:ALIGN (sample_1)"; null if unknown.
+     * "WORKFLOW:ALIGN (sample_1)"; null if unknown. Nextflow writes the
+     * header since version 24.04; earlier versions wrote no task metadata.
      */
     final String taskName
 

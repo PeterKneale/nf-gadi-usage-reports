@@ -25,6 +25,9 @@ import nextflow.trace.TraceRecord
 
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * Records the Gadi resource usage of each task in a pipeline run in a
@@ -40,6 +43,19 @@ class NfGadiObserver implements TraceObserver {
     private final GadiUsageReader reader
     private final GadiReportPublisher publisher
 
+    /** The run's work directory, which task work directories are reported relative to. */
+    private final Path runWorkDir
+
+    /**
+     * Waits for finished tasks' logs, see {@link #onProcessComplete}. Daemon
+     * threads, so a wait still in progress never keeps Nextflow from exiting.
+     */
+    private final ExecutorService readers = Executors.newCachedThreadPool { Runnable waiting ->
+        Thread thread = new Thread(waiting, 'nf-gadi-usage-reader')
+        thread.daemon = true
+        return thread
+    }
+
     /** Writes the reports to the launch directory. */
     NfGadiObserver(Session session) {
         this(session, Paths.get(''), new GadiUsageReader())
@@ -53,6 +69,7 @@ class NfGadiObserver implements TraceObserver {
         this.report = new GadiUsageReport(reportFolder)
         this.reader = reader
         this.publisher = new GadiReportPublisher(session.config.navigate('gadi.publishTo'))
+        this.runWorkDir = session.workDir
     }
 
     @Override
@@ -78,6 +95,12 @@ class NfGadiObserver implements TraceObserver {
         report.recordTask(task, usage)
     }
 
+    /**
+     * The task has only just finished, so PBS may still be writing its log.
+     * Waiting for it here would hold up Nextflow, which calls this on the
+     * thread that handles every task's completion, so the wait is done on
+     * another thread and the task is recorded when its log is read.
+     */
     @Override
     void onProcessComplete(TaskHandler handler, TraceRecord trace) {
         GadiTask task = task(handler, trace)
@@ -86,9 +109,36 @@ class NfGadiObserver implements TraceObserver {
             return
         }
 
-        // The task has only just finished, so PBS may still be writing its log
-        GadiUsageRecord usage = readUsage(task) { reader.waitAndRead(workDir(trace)) }
-        report.recordTask(task, usage)
+        Path workDir = workDir(trace)
+        readers.execute {
+            try {
+                GadiUsageRecord usage = readUsage(task) { reader.waitAndRead(workDir) }
+                report.recordTask(task, usage)
+            } catch (Exception e) {
+                log.error "Cannot record ${task.name} in the usage report: ${e}"
+            }
+        }
+    }
+
+    /** Waits for the logs of the last tasks to be read, then writes and publishes the reports. */
+    @Override
+    void onFlowComplete() {
+        awaitReaders()
+        report.finish()
+        publisher.publish(report.paths)
+        log.info "Pipeline complete! 👋"
+    }
+
+    /** Time allowed, beyond the reader's own wait, for reading and recording the last tasks' logs. */
+    static final long AWAIT_MARGIN_MILLIS = 30_000
+
+    private void awaitReaders() {
+        readers.shutdown()
+        // A task that finished just before the run did may wait its full time budget
+        long timeoutMillis = reader.maxWaitMillis + reader.pollIntervalMillis + AWAIT_MARGIN_MILLIS
+        if (!readers.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS)) {
+            log.warn "Gave up waiting for the job logs of the last tasks to finish, so they are missing from the usage reports"
+        }
     }
 
     /**
@@ -105,13 +155,6 @@ class NfGadiObserver implements TraceObserver {
         }
     }
 
-    @Override
-    void onFlowComplete() {
-        report.finish()
-        publisher.publish(report.paths)
-        log.info "Pipeline complete! 👋"
-    }
-
     /** False for a task with no job ID, e.g. one that failed before it was submitted. */
     private static boolean isGadiJob(TraceRecord trace) {
         String jobId = trace.get('native_id') as String
@@ -122,9 +165,20 @@ class NfGadiObserver implements TraceObserver {
         return Path.of(trace.get('workdir').toString())
     }
 
-    private static GadiTask task(TaskHandler handler, TraceRecord trace) {
+    private GadiTask task(TaskHandler handler, TraceRecord trace) {
         String queue = trace.get('queue') as String
-        String workDir = trace.get('workdir') as String
-        return GadiTask.of(handler.task.name, queue, workDir)
+        return GadiTask.of(handler.task.name, queue, reportedWorkDir(workDir(trace)))
+    }
+
+    /**
+     * A task's work directory relative to the run's, e.g. "94/348cfc33...",
+     * as the command line tool reports it. Absolute if the task's work
+     * directory is somewhere else.
+     */
+    private String reportedWorkDir(Path workDir) {
+        if (runWorkDir != null && workDir.startsWith(runWorkDir)) {
+            return runWorkDir.relativize(workDir).toString()
+        }
+        return workDir.toString()
     }
 }

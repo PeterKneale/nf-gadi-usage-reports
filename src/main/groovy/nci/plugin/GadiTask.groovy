@@ -19,7 +19,10 @@ class GadiTask {
     /** The Gadi queue the task ran in; null if unknown. */
     String queue
 
-    /** The task's work directory; null if unknown. */
+    /**
+     * The task's work directory, relative to the run's work directory or
+     * the folder searched, e.g. "94/348cfc33..."; null if unknown.
+     */
     String workDir
 
     /** A task whose process is taken from its name, e.g. "ALIGN" for "ALIGN (sample_1)". */
