@@ -11,7 +11,7 @@ import java.time.Duration
  */
 @Immutable
 @CompileStatic
-class GadiUsage {
+class GadiUsageRecord {
     Integer exitCode
     BigDecimal serviceUnits
     Integer cpus

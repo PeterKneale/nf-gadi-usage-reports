@@ -12,8 +12,8 @@ import static nci.plugin.GadiTestSupport.hms
  */
 class GadiEfficiencyCalculatorTest extends Specification {
 
-    private static GadiUsage usage(String cpu_time, String walltime_used, String cpus) {
-        new GadiUsage(cpuTime: hms(cpu_time), walltimeUsed: hms(walltime_used), cpus: cpus as Integer)
+    private static GadiUsageRecord usage(String cpu_time, String walltime_used, String cpus) {
+        new GadiUsageRecord(cpuTime: hms(cpu_time), walltimeUsed: hms(walltime_used), cpus: cpus as Integer)
     }
 
     @Unroll

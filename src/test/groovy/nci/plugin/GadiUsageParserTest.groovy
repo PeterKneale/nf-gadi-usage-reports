@@ -17,7 +17,7 @@ class GadiUsageParserTest extends Specification {
         def usage = GadiUsageParser.parseText('')
 
         then:
-        usage == new GadiUsage()
+        usage == new GadiUsageRecord()
     }
 
     def "GPU memory line is not mistaken for memory used"() {

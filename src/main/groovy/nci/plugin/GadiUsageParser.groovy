@@ -11,14 +11,14 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
- * Extracts a {@link GadiUsage} from a Gadi job log (.command.log).
+ * Extracts a {@link GadiUsageRecord} from a Gadi job log (.command.log).
  * When a value appears on more than one line, the last one wins.
  */
 @Slf4j
 @CompileStatic
 class GadiUsageParser {
 
-    /** Keyed by {@link GadiUsage} property name. */
+    /** Keyed by {@link GadiUsageRecord} property name. */
     private static final Map<String, Pattern> FIELDS = [
         exitCode:          ~/Exit Status:\s+(-?\d+)/,
         serviceUnits:      ~/Service Units:\s+(\d+\.\d+)/,
@@ -42,7 +42,7 @@ class GadiUsageParser {
      * @param warnIfMissing false to skip the missing-field warnings, e.g.
      *        while polling a log that is still being written
      */
-    GadiUsage parse(boolean warnIfMissing = true) {
+    GadiUsageRecord parse(boolean warnIfMissing = true) {
         byte[] bytes = Files.readAllBytes(logFile)
         // Decode leniently: tool output in the log may not be valid UTF-8
         String text = new String(bytes, StandardCharsets.UTF_8)
@@ -53,7 +53,7 @@ class GadiUsageParser {
      * @param source where the text came from, used in log messages
      * @param warnIfMissing false to skip the missing-field warnings
      */
-    static GadiUsage parseText(String text, String source = 'text', boolean warnIfMissing = true) {
+    static GadiUsageRecord parseText(String text, String source = 'text', boolean warnIfMissing = true) {
         Map<String, String> found = [:]
         text.eachLine { String line ->
             FIELDS.each { String field, Pattern pattern ->
@@ -72,7 +72,7 @@ class GadiUsageParser {
             }
         }
 
-        return new GadiUsage(
+        return new GadiUsageRecord(
             exitCode:          toInteger(found.exitCode),
             serviceUnits:      toDecimal(found.serviceUnits),
             cpus:              toInteger(found.cpus),

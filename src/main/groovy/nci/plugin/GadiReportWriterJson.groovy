@@ -25,9 +25,10 @@ class GadiReportWriterJson extends GadiReportWriter {
     }
 
     @Override
-    protected void record(String taskName, Map<String, String> values) {
-        values['name'] = taskName
-        results.compute(processName(taskName)) { String key, List<Map<String, String>> existingList ->
+    protected void record(GadiTask task, Map<String, String> values) {
+        values['name'] = task.name
+        values['workDir'] = task.workDir
+        results.compute(task.process) { String key, List<Map<String, String>> existingList ->
             if (existingList == null) {
                 existingList = new ArrayList<Map<String, String>>()
             }

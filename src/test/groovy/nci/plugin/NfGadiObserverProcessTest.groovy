@@ -14,7 +14,7 @@ import spock.lang.TempDir
  */
 class NfGadiObserverProcessTest extends Specification {
 
-    static final String HEADER = 'Name,Process,Queue,Service Units,CPUs,CPU time,Used Walltime,Requested Walltime,' +
+    static final String HEADER = 'Work Dir,Name,Process,Queue,Service Units,CPUs,CPU time,Used Walltime,Requested Walltime,' +
         'Used Memory,Requested Memory,Used JobFS,Requested JobFS,Efficiency,Exit Code'
 
     @TempDir
@@ -25,9 +25,9 @@ class NfGadiObserverProcessTest extends Specification {
 
     def setup() {
         report = tmp.resolve('UsageReport.csv')
-        observer = new NfGadiObserver(Stub(Session) { getConfig() >> [gadi: [publishTo: tmp.resolve('published').toString()]] }, tmp)
-        observer.pollIntervalMillis = 1   // keep the wait loops fast
-        observer.maxWaitMillis = 3
+        def config = [gadi: [publishTo: tmp.resolve('published').toString()]]
+        def fastReader = new GadiUsageReader(1, 3)   // keep the wait loops fast
+        observer = new NfGadiObserver(Stub(Session) { getConfig() >> config }, tmp, fastReader)
         observer.onFlowBegin()            // writes the CSV header
     }
 
@@ -54,7 +54,7 @@ class NfGadiObserverProcessTest extends Specification {
         then:
         report.readLines() == [
             HEADER,
-            'COUNT (sample_1),COUNT,normal,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0',
+            "${scenario('tool_featurecounts')},COUNT (sample_1),COUNT,normal,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0".toString(),
         ]
     }
 
@@ -66,7 +66,7 @@ class NfGadiObserverProcessTest extends Specification {
         noExceptionThrown()   // was a NoSuchFileException
         report.readLines() == [
             HEADER,
-            '"ALIGN (sample_1, lane2)",ALIGN,normal,,,,,,,,,,,',
+            "${tmp.resolve('no_such_workdir')},\"ALIGN (sample_1, lane2)\",ALIGN,normal,,,,,,,,,,,".toString(),
         ]
     }
 
@@ -78,7 +78,7 @@ class NfGadiObserverProcessTest extends Specification {
         noExceptionThrown()   // was a NoSuchFileException
         report.readLines() == [
             HEADER,
-            'ALIGN (sample_2),ALIGN,normal,,,,,,,,,,,',
+            "${tmp.resolve('cleaned_workdir')},ALIGN (sample_2),ALIGN,normal,,,,,,,,,,,".toString(),
         ]
     }
 
@@ -99,7 +99,7 @@ class NfGadiObserverProcessTest extends Specification {
         Path folder = tmp.resolve('old_settings')
         Files.createDirectories(folder)
         def oldConfig = [gadi: [format: 'json', output: folder.resolve('custom.json').toString()]]
-        def observer = new NfGadiObserver(Stub(Session) { getConfig() >> oldConfig }, folder)
+        def observer = new NfGadiObserver(Stub(Session) { getConfig() >> oldConfig }, folder, new GadiUsageReader(1, 3))
 
         when:
         observer.onFlowBegin()

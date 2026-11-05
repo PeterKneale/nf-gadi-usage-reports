@@ -16,7 +16,7 @@ class GadiEfficiencyCalculator {
      * @return the efficiency, or null when CPU time, walltime or CPUs
      *         are missing from the log, or walltime or CPUs are zero.
      */
-    static Double calculate(GadiUsage usage) {
+    static Double calculate(GadiUsageRecord usage) {
         Duration cpuTime = usage.cpuTime
         Duration walltime = usage.walltimeUsed
         Integer cpus = usage.cpus

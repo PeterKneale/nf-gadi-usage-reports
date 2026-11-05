@@ -40,7 +40,7 @@ class GadiScenarioTest extends Specification {
     @Shared
     File scenariosDir = new File(GadiScenarioTest.getResource('scenarios').toURI())
 
-    private GadiUsage parse(String scenario) {
+    private GadiUsageRecord parse(String scenario) {
         def log = new File(scenariosDir, "${scenario}/.command.log")
         assert log.exists() : "missing ${log}"
         new GadiUsageParser(log.toPath()).parse()
@@ -49,7 +49,7 @@ class GadiScenarioTest extends Specification {
     @Unroll
     def "scenario #scenario"() {
         when:
-        GadiUsage usage = parse(scenario)
+        GadiUsageRecord usage = parse(scenario)
         Double calculated = GadiEfficiencyCalculator.calculate(usage)
 
         then: 'the table holds values as written in the log; each is checked as its parsed type'

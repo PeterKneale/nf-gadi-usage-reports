@@ -7,7 +7,7 @@ import spock.lang.Unroll
 import static nci.plugin.GadiTestSupport.hms
 import static nci.plugin.GadiTestSupport.size
 
-class GadiUsageTest extends Specification {
+class GadiUsageRecordTest extends Specification {
 
     private static final Map<String, Object> COMPLETE = [
         serviceUnits: 0.40, walltimeUsed: hms('00:01:09'), cpus: 6, memoryUsed: size('10.89GB'),
@@ -15,7 +15,7 @@ class GadiUsageTest extends Specification {
 
     def "complete when service units, walltime, CPUs and memory are present"() {
         expect:
-        new GadiUsage(COMPLETE).isComplete()
+        new GadiUsageRecord(COMPLETE).isComplete()
     }
 
     @Unroll
@@ -25,7 +25,7 @@ class GadiUsageTest extends Specification {
         fields.remove(missing)
 
         expect:
-        !new GadiUsage(fields).isComplete()
+        !new GadiUsageRecord(fields).isComplete()
 
         where:
         missing << ['serviceUnits', 'walltimeUsed', 'cpus', 'memoryUsed']
@@ -33,6 +33,6 @@ class GadiUsageTest extends Specification {
 
     def "other fields are not needed to be complete"() {
         expect:
-        new GadiUsage(COMPLETE).with { exitCode == null && cpuTime == null && isComplete() }
+        new GadiUsageRecord(COMPLETE).with { exitCode == null && cpuTime == null && isComplete() }
     }
 }

@@ -1,0 +1,14 @@
+Work Dir,Name,Process,Queue,Service Units,CPUs,CPU time,Used Walltime,Requested Walltime,Used Memory,Requested Memory,Used JobFS,Requested JobFS,Efficiency,Exit Code
+exit_code_255,exit_code_255,exit_code_255,,0.11,1,00:00:19,00:02:15,05:00:00,14.75MB,6.0GB,0B,100.0MB,0.14,255
+exit_code_negative,exit_code_negative,exit_code_negative,,0.11,1,00:00:19,00:02:15,05:00:00,14.75MB,6.0GB,0B,100.0MB,0.14,-29
+tool_bcftools,tool_bcftools,tool_bcftools,,3.00,6,00:08:49,00:08:35,05:00:00,3.77GB,42.0GB,0B,100.0MB,0.17,0
+tool_bedtools,tool_bedtools,tool_bedtools,,0.07,2,00:00:00,00:00:36,05:00:00,69.85MB,14.0GB,0B,100.0MB,0.00,0
+tool_fastqc,tool_fastqc,tool_fastqc,,5.31,2,01:20:16,00:45:31,05:00:00,14.0GB,14.0GB,0B,100.0MB,0.88,0
+tool_featurecounts,tool_featurecounts,tool_featurecounts,,0.40,6,00:02:22,00:01:09,05:00:00,10.89GB,42.0GB,0B,100.0MB,0.34,0
+tool_multiqc,tool_multiqc,tool_multiqc,,0.16,1,00:01:07,00:03:12,05:00:00,2.27GB,6.0GB,9.79MB,100.0MB,0.35,0
+tool_picard,tool_picard,tool_picard,,115.15,24,02:46:15,02:23:56,05:00:00,68.83GB,84.0GB,0B,100.0MB,0.05,0
+tool_reformat,tool_reformat,tool_reformat,,1.54,2,00:09:08,00:13:13,05:00:00,14.0GB,14.0GB,0B,100.0MB,0.35,0
+tool_regtools,tool_regtools,tool_regtools,,10.31,6,00:22:06,00:29:28,05:00:00,26.94GB,42.0GB,0B,100.0MB,0.13,0
+tool_samtools,tool_samtools,tool_samtools,,17.24,6,02:26:57,00:49:16,05:00:00,42.0GB,42.0GB,0B,100.0MB,0.50,0
+tool_star,tool_star,tool_star,,30.13,24,13:55:28,00:37:40,05:00:00,84.0GB,84.0GB,0B,100.0MB,0.92,0
+tool_trimmomatic,tool_trimmomatic,tool_trimmomatic,,35.07,12,06:56:02,00:50:06,05:00:00,44.37GB,84.0GB,0B,100.0MB,0.69,0

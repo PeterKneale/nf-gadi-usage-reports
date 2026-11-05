@@ -4,6 +4,8 @@ A [Nextflow](https://www.nextflow.io/) plugin that reports the resources each ta
 
 For every task it records the service units charged, CPU time, walltime, memory and JobFS used against what was requested, and the CPU efficiency. The results are written to a CSV report and a JSON report in the launch directory, with no configuration needed.
 
+The same reports can also be produced afterwards, without Nextflow, from the job logs a run left behind. See [Reporting on existing job logs](#reporting-on-existing-job-logs).
+
 `nf-gadi-usage-reports` is a fork of the [nf-gadi](https://github.com/eileen-xue/nf-gadi) plugin (v1.4.0). It is a separate plugin, so use it in place of `nf-gadi` rather than alongside it. See [Switching from nf-gadi](#switching-from-nf-gadi).
 
 ## Requirements
@@ -70,6 +72,7 @@ Because the CSV report is written as the pipeline runs, it keeps the rows writte
 
 | Column             | Description                        |
 | ------------------ | ---------------------------------- |
+| Work Dir           | The task's work directory          |
 | Name               | Task name, e.g. `ALIGN (sample_1)` |
 | Process            | Process name, e.g. `ALIGN`         |
 | Queue              | Gadi queue the job ran in          |
@@ -107,7 +110,8 @@ The same values, grouped by process:
             "requestedJobFS": "100.0MB",
             "usedJobFS": "0B",
             "queue": "normal",
-            "name": "COUNT (sample_1)"
+            "name": "COUNT (sample_1)",
+            "workDir": "/scratch/ab12/my_pipeline/work/94/348cfc33f75979f408e9e9d20d4d6e"
         }
     ]
 }
@@ -162,6 +166,58 @@ gadi {
 
 `publishTo` can also be a closure, which is evaluated when the pipeline finishes. If publishing fails, a warning is logged and the run is not affected.
 
+## Reporting on existing job logs
+
+The `gadi-usage-report` command line tool writes the same two reports for job logs that already exist, for example from a run that did not use the plugin. It needs only Java 17 or later; Nextflow does not need to be installed.
+
+It searches a folder and all its subfolders for Gadi job logs (`.command.log`), and writes one `UsageReport.csv` and one `UsageReport.json` to the current directory, covering every log it finds. The folder can hold any number of pipeline runs, so one report can cover every task of every run.
+
+### Building the tool
+
+```
+git clone https://github.com/peterkneale/nf-gadi-usage-reports.git
+cd nf-gadi-usage-reports
+make cli
+```
+
+This builds `build/libs/gadi-usage-report-1.0.0.jar`, a single self-contained file that can be copied to Gadi or anywhere else with Java.
+
+### Running it
+
+Point it at a Nextflow work directory, a folder holding several runs' work directories, or any folder containing job logs:
+
+```
+java -jar gadi-usage-report-1.0.0.jar /scratch/ab12/my_pipeline/work
+java -jar gadi-usage-report-1.0.0.jar /scratch/ab12/my_pipeline/runs
+```
+
+The reports are written to the current directory, replacing any from an earlier run there.
+
+When it finishes it prints a summary:
+
+```
+Found 13 job logs in /scratch/ab12/my_pipeline/work
+  13 complete
+  0 incomplete (some usage values missing)
+  0 unreadable
+Wrote /home/user/UsageReport.csv
+Wrote /home/user/UsageReport.json
+```
+
+Run it with `--help` to show the usage message.
+
+Incomplete and unreadable logs are listed by path, up to 10 of each. Incomplete logs are still reported, with their missing values left empty.
+
+The exit code is `0` on success, `1` if no job logs were found or any could not be read, and `2` if the arguments are wrong, so the tool can be used in scripts.
+
+### Task names
+
+Each task is reported as Nextflow named it, such as `MAIN:ALIGN (sample_1)`, read from the job script (`.command.run`) Nextflow writes in every work directory. The Process and Queue columns come from the same file, so tasks are named and grouped exactly as the plugin reports them.
+
+The Work Dir column holds each task's work directory relative to the folder searched, such as `run1/94/348cfc33f75979f408e9e9d20d4d6e`. It tells apart tasks with the same name from different runs, and shows where to find each task's logs.
+
+If a work directory has a job log but no job script, for example when only the logs were copied, the task is named by its work directory instead.
+
 ## Switching from nf-gadi
 
 - Replace `nf-gadi` with `nf-gadi-usage-reports@1.0.0` in your `plugins` block or `-plugins` option.
@@ -176,13 +232,26 @@ Build and test the plugin with:
 make test       # run the unit tests
 make assemble   # build the plugin
 make install    # install it into your local Nextflow plugins folder
+make cli        # build the command line tool
 ```
 
-The parser is tested against real Gadi job logs in `src/test/resources/nci/plugin/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders. To add a scenario:
+The parser is tested against real Gadi job logs in `src/test/resources/nci/plugin/scenarios/`, one folder per scenario. The logs have been anonymised: batch and sample names, job IDs, project codes, usernames and flowcell IDs are replaced with placeholders.
+
+The command line tool is tested by running it against the same scenarios and comparing its reports with golden copies in `src/test/resources/nci/plugin/cli/golden/`.
+
+To add a scenario:
 
 1. Create a folder holding the anonymised `.command.log`.
 2. Add the folder name to `SCENARIOS` in `GadiScenarioTest`.
 3. Add a row to the test's table with the values from the log's Resource Usage block, checked by hand.
+4. Regenerate the golden reports, and check that the only change is the new scenario's row:
+
+   ```
+   make cli
+   JAR=$PWD/build/libs/gadi-usage-report-1.0.0.jar
+   (cd src/test/resources/nci/plugin/cli/golden && java -jar "$JAR" ../../scenarios)
+   git diff src/test/resources/nci/plugin/cli/golden
+   ```
 
 Raw, unanonymised logs can be kept in `src/test/data/`, which is ignored by git. Never commit them.
 

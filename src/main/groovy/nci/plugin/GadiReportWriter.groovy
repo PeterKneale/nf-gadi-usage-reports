@@ -27,15 +27,15 @@ abstract class GadiReportWriter {
     }
 
     /** Records a task that ran on Gadi; usage values are empty if its log could not be read. */
-    final void recordTask(String taskName, GadiUsage usage, String queue) {
+    final void recordTask(GadiTask task, GadiUsageRecord usage) {
         Map<String, String> values = reportValues(usage)
-        values['queue'] = queue
-        record(taskName, values)
+        values['queue'] = task.queue
+        record(task, values)
     }
 
     /** Records a task that did not run on Gadi, so has no usage values. */
-    final void recordTask(String taskName) {
-        record(taskName, [:])
+    final void recordTask(GadiTask task) {
+        record(task, [:])
     }
 
     /** Called once after the last task. */
@@ -46,14 +46,9 @@ abstract class GadiReportWriter {
      * Records one task's report values, keyed as in the JSON report
      * (see {@link #reportValues}) plus 'queue' for Gadi tasks.
      */
-    protected abstract void record(String taskName, Map<String, String> values)
+    protected abstract void record(GadiTask task, Map<String, String> values)
 
-    /** The process a task belongs to, e.g. "ALIGN" for "ALIGN (sample_1)". */
-    protected static String processName(String taskName) {
-        return taskName.split(/\s+/)[0]
-    }
-
-    private static Map<String, String> reportValues(GadiUsage usage) {
+    private static Map<String, String> reportValues(GadiUsageRecord usage) {
         Double efficiency = GadiEfficiencyCalculator.calculate(usage)
 
         // Key order matters: it is the field order in the JSON report

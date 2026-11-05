@@ -15,6 +15,7 @@ import java.nio.file.StandardOpenOption
 class GadiReportWriterCsv extends GadiReportWriter {
 
     static final List<String> CSV_HEADER = [
+        'Work Dir',
         'Name',
         'Process',
         'Queue',
@@ -44,10 +45,11 @@ class GadiReportWriterCsv extends GadiReportWriter {
     }
 
     @Override
-    protected void record(String taskName, Map<String, String> values) {
+    protected void record(GadiTask task, Map<String, String> values) {
         List<String> row = [
-            taskName,
-            processName(taskName),
+            task.workDir,
+            task.name,
+            task.process,
             values.queue,
             values.sus,
             values.cpus,

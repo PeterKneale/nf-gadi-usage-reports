@@ -13,3 +13,35 @@ nextflowPlugin {
         'nci.plugin.NfGadiFactory'
     ]
 }
+
+// Command line tool: a self-contained jar that reports on existing job logs
+// without Nextflow. Bundles only the classes and libraries it needs.
+configurations {
+    cli
+}
+
+dependencies {
+    cli 'org.apache.groovy:groovy:4.0.21'
+    cli 'org.apache.groovy:groovy-json:4.0.21'
+    cli 'org.slf4j:slf4j-api:2.0.7'
+    cli 'org.slf4j:slf4j-nop:2.0.7'   // the tool prints its own summary instead of log messages
+}
+
+tasks.register('cliJar', Jar) {
+    group = 'build'
+    description = 'Builds the gadi-usage-report command line tool as a runnable jar'
+    archiveBaseName = 'gadi-usage-report'
+    manifest {
+        attributes 'Main-Class': 'nci.plugin.cli.GadiUsageReportCli'
+    }
+    from(sourceSets.main.output) {
+        // Leave out the Nextflow plugin classes; the tool does not use them
+        exclude 'nci/plugin/NfGadi*', 'nci/plugin/GadiReportPublisher*', 'META-INF/extensions.idx', 'META-INF/MANIFEST.MF'
+    }
+    from {
+        configurations.cli.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'module-info.class', 'META-INF/versions/*/module-info.class'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

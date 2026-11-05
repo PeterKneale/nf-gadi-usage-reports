@@ -1,0 +1,236 @@
+{
+    "tool_multiqc": [
+        {
+            "sus": "0.16",
+            "walltime": "00:03:12",
+            "cputime": "00:01:07",
+            "cpus": "1",
+            "memory": "2.27GB",
+            "efficiency": "0.35",
+            "exitCode": "0",
+            "requestedMemory": "6.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "9.79MB",
+            "queue": null,
+            "name": "tool_multiqc",
+            "workDir": "tool_multiqc"
+        }
+    ],
+    "tool_samtools": [
+        {
+            "sus": "17.24",
+            "walltime": "00:49:16",
+            "cputime": "02:26:57",
+            "cpus": "6",
+            "memory": "42.0GB",
+            "efficiency": "0.50",
+            "exitCode": "0",
+            "requestedMemory": "42.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_samtools",
+            "workDir": "tool_samtools"
+        }
+    ],
+    "tool_regtools": [
+        {
+            "sus": "10.31",
+            "walltime": "00:29:28",
+            "cputime": "00:22:06",
+            "cpus": "6",
+            "memory": "26.94GB",
+            "efficiency": "0.13",
+            "exitCode": "0",
+            "requestedMemory": "42.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_regtools",
+            "workDir": "tool_regtools"
+        }
+    ],
+    "exit_code_negative": [
+        {
+            "sus": "0.11",
+            "walltime": "00:02:15",
+            "cputime": "00:00:19",
+            "cpus": "1",
+            "memory": "14.75MB",
+            "efficiency": "0.14",
+            "exitCode": "-29",
+            "requestedMemory": "6.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "exit_code_negative",
+            "workDir": "exit_code_negative"
+        }
+    ],
+    "tool_bcftools": [
+        {
+            "sus": "3.00",
+            "walltime": "00:08:35",
+            "cputime": "00:08:49",
+            "cpus": "6",
+            "memory": "3.77GB",
+            "efficiency": "0.17",
+            "exitCode": "0",
+            "requestedMemory": "42.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_bcftools",
+            "workDir": "tool_bcftools"
+        }
+    ],
+    "tool_featurecounts": [
+        {
+            "sus": "0.40",
+            "walltime": "00:01:09",
+            "cputime": "00:02:22",
+            "cpus": "6",
+            "memory": "10.89GB",
+            "efficiency": "0.34",
+            "exitCode": "0",
+            "requestedMemory": "42.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_featurecounts",
+            "workDir": "tool_featurecounts"
+        }
+    ],
+    "tool_star": [
+        {
+            "sus": "30.13",
+            "walltime": "00:37:40",
+            "cputime": "13:55:28",
+            "cpus": "24",
+            "memory": "84.0GB",
+            "efficiency": "0.92",
+            "exitCode": "0",
+            "requestedMemory": "84.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_star",
+            "workDir": "tool_star"
+        }
+    ],
+    "tool_trimmomatic": [
+        {
+            "sus": "35.07",
+            "walltime": "00:50:06",
+            "cputime": "06:56:02",
+            "cpus": "12",
+            "memory": "44.37GB",
+            "efficiency": "0.69",
+            "exitCode": "0",
+            "requestedMemory": "84.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_trimmomatic",
+            "workDir": "tool_trimmomatic"
+        }
+    ],
+    "tool_bedtools": [
+        {
+            "sus": "0.07",
+            "walltime": "00:00:36",
+            "cputime": "00:00:00",
+            "cpus": "2",
+            "memory": "69.85MB",
+            "efficiency": "0.00",
+            "exitCode": "0",
+            "requestedMemory": "14.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_bedtools",
+            "workDir": "tool_bedtools"
+        }
+    ],
+    "tool_picard": [
+        {
+            "sus": "115.15",
+            "walltime": "02:23:56",
+            "cputime": "02:46:15",
+            "cpus": "24",
+            "memory": "68.83GB",
+            "efficiency": "0.05",
+            "exitCode": "0",
+            "requestedMemory": "84.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_picard",
+            "workDir": "tool_picard"
+        }
+    ],
+    "exit_code_255": [
+        {
+            "sus": "0.11",
+            "walltime": "00:02:15",
+            "cputime": "00:00:19",
+            "cpus": "1",
+            "memory": "14.75MB",
+            "efficiency": "0.14",
+            "exitCode": "255",
+            "requestedMemory": "6.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "exit_code_255",
+            "workDir": "exit_code_255"
+        }
+    ],
+    "tool_fastqc": [
+        {
+            "sus": "5.31",
+            "walltime": "00:45:31",
+            "cputime": "01:20:16",
+            "cpus": "2",
+            "memory": "14.0GB",
+            "efficiency": "0.88",
+            "exitCode": "0",
+            "requestedMemory": "14.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_fastqc",
+            "workDir": "tool_fastqc"
+        }
+    ],
+    "tool_reformat": [
+        {
+            "sus": "1.54",
+            "walltime": "00:13:13",
+            "cputime": "00:09:08",
+            "cpus": "2",
+            "memory": "14.0GB",
+            "efficiency": "0.35",
+            "exitCode": "0",
+            "requestedMemory": "14.0GB",
+            "requestedWalltime": "05:00:00",
+            "requestedJobFS": "100.0MB",
+            "usedJobFS": "0B",
+            "queue": null,
+            "name": "tool_reformat",
+            "workDir": "tool_reformat"
+        }
+    ]
+}
