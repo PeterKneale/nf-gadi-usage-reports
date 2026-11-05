@@ -15,10 +15,10 @@ A command line tool makes the same reports from the job logs of old runs. The to
 
 ### Install the plugin
 
-Install from the [Nextflow plugin registry](https://registry.nextflow.io/plugins/nf-gadi-usage-reports). This needs Nextflow 25.10 or later:
+Install from the [Nextflow plugin registry](https://registry.nextflow.io/plugins/nf-gadi-usage-reports).
 
 ```
-module load nextflow/25.10.4
+module load nextflow
 nextflow plugin install nf-gadi-usage-reports@1.0.0
 ```
 
