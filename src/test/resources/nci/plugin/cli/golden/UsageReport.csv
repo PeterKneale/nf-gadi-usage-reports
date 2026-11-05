@@ -1,4 +1,4 @@
-Work Dir,Name,Process,Queue,Service Units,CPUs,CPU time,Used Walltime,Requested Walltime,Used Memory,Requested Memory,Used JobFS,Requested JobFS,Efficiency,Exit Code
+work_dir,name,process,queue,service_units,cpus,cpu_time,used_walltime,requested_walltime,used_memory,requested_memory,used_jobfs,requested_jobfs,efficiency,exit_code
 exit_code_255,exit_code_255,exit_code_255,,0.11,1,00:00:19,00:02:15,05:00:00,14.75MB,6.0GB,0B,100.0MB,0.14,255
 exit_code_negative,exit_code_negative,exit_code_negative,,0.11,1,00:00:19,00:02:15,05:00:00,14.75MB,6.0GB,0B,100.0MB,0.14,-29
 tool_bcftools,tool_bcftools,tool_bcftools,,3.00,6,00:08:49,00:08:35,05:00:00,3.77GB,42.0GB,0B,100.0MB,0.17,0

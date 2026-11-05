@@ -70,48 +70,49 @@ Because the CSV report is written as the pipeline runs, it keeps the rows writte
 
 ### CSV columns
 
-| Column             | Description                        |
-| ------------------ | ---------------------------------- |
-| Work Dir           | The task's work directory          |
-| Name               | Task name, e.g. `ALIGN (sample_1)` |
-| Process            | Process name, e.g. `ALIGN`         |
-| Queue              | Gadi queue the job ran in          |
-| Service Units      | Service units charged for the job  |
-| CPUs               | CPUs requested                     |
-| CPU time           | CPU time used, as `HH:MM:SS`       |
-| Used Walltime      | Walltime used, as `HH:MM:SS`       |
-| Requested Walltime | Walltime requested, as `HH:MM:SS`  |
-| Used Memory        | Memory used, e.g. `10.89GB`        |
-| Requested Memory   | Memory requested, e.g. `42.0GB`    |
-| Used JobFS         | Local disk (JobFS) used            |
-| Requested JobFS    | Local disk (JobFS) requested       |
-| Efficiency         | CPU efficiency, see below          |
-| Exit Code          | The job's exit status              |
+| Column               | Description                        |
+| -------------------- | ---------------------------------- |
+| `work_dir`           | The task's work directory          |
+| `name`               | Task name, e.g. `ALIGN (sample_1)` |
+| `process`            | Process name, e.g. `ALIGN`         |
+| `queue`              | Gadi queue the job ran in          |
+| `service_units`      | Service units charged for the job  |
+| `cpus`               | CPUs requested                     |
+| `cpu_time`           | CPU time used, as `HH:MM:SS`       |
+| `used_walltime`      | Walltime used, as `HH:MM:SS`       |
+| `requested_walltime` | Walltime requested, as `HH:MM:SS`  |
+| `used_memory`        | Memory used, e.g. `10.89GB`        |
+| `requested_memory`   | Memory requested, e.g. `42.0GB`    |
+| `used_jobfs`         | Local disk (JobFS) used            |
+| `requested_jobfs`    | Local disk (JobFS) requested       |
+| `efficiency`         | CPU efficiency, see below          |
+| `exit_code`          | The job's exit status              |
 
 Values containing commas, such as task names with several tags, are quoted, so the file opens correctly in spreadsheet tools.
 
 ### JSON report
 
-The same values, grouped by process:
+The same fields, grouped by process:
 
 ```json
 {
     "COUNT": [
         {
-            "sus": "0.40",
-            "walltime": "00:01:09",
-            "cputime": "00:02:22",
-            "cpus": "6",
-            "memory": "10.89GB",
-            "efficiency": "0.34",
-            "exitCode": "0",
-            "requestedMemory": "42.0GB",
-            "requestedWalltime": "05:00:00",
-            "requestedJobFS": "100.0MB",
-            "usedJobFS": "0B",
-            "queue": "normal",
+            "work_dir": "/scratch/ab12/my_pipeline/work/94/348cfc33f75979f408e9e9d20d4d6e",
             "name": "COUNT (sample_1)",
-            "workDir": "/scratch/ab12/my_pipeline/work/94/348cfc33f75979f408e9e9d20d4d6e"
+            "process": "COUNT",
+            "queue": "normal",
+            "service_units": "0.40",
+            "cpus": "6",
+            "cpu_time": "00:02:22",
+            "used_walltime": "00:01:09",
+            "requested_walltime": "05:00:00",
+            "used_memory": "10.89GB",
+            "requested_memory": "42.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.34",
+            "exit_code": "0"
         }
     ]
 }
@@ -212,9 +213,9 @@ The exit code is `0` on success, `1` if no job logs were found or any could not 
 
 ### Task names
 
-Each task is reported as Nextflow named it, such as `MAIN:ALIGN (sample_1)`, read from the job script (`.command.run`) Nextflow writes in every work directory. The Process and Queue columns come from the same file, so tasks are named and grouped exactly as the plugin reports them.
+Each task is reported as Nextflow named it, such as `MAIN:ALIGN (sample_1)`, read from the job script (`.command.run`) Nextflow writes in every work directory. The `process` and `queue` columns come from the same file, so tasks are named and grouped exactly as the plugin reports them.
 
-The Work Dir column holds each task's work directory relative to the folder searched, such as `run1/94/348cfc33f75979f408e9e9d20d4d6e`. It tells apart tasks with the same name from different runs, and shows where to find each task's logs.
+The `work_dir` column holds each task's work directory relative to the folder searched, such as `run1/94/348cfc33f75979f408e9e9d20d4d6e`. It tells apart tasks with the same name from different runs, and shows where to find each task's logs.
 
 If a work directory has a job log but no job script, for example when only the logs were copied, the task is named by its work directory instead.
 

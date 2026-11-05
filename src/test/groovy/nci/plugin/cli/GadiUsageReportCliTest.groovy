@@ -110,7 +110,7 @@ class GadiUsageReportCliTest extends Specification {
 
         and: 'the JSON groups the same process across runs'
         json.keySet() == ['MAIN:COUNT', 'MAIN:ALIGN'] as Set
-        json['MAIN:COUNT']*.workDir == ['run1/94/348cfc33f75979f408e9e9d20d4d6e', 'run2/17/ffeeddccbbaa99887766554433221100']
+        json['MAIN:COUNT']*.work_dir == ['run1/94/348cfc33f75979f408e9e9d20d4d6e', 'run2/17/ffeeddccbbaa99887766554433221100']
     }
 
     def "without a job script, a task is named by its work dir"() {

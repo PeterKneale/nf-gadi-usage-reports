@@ -14,3 +14,6 @@ work
 
 # Raw Gadi task logs: large and may contain identifying data
 src/test/data/
+
+# Reports written by running the plugin or command line tool in the project
+/UsageReport.*

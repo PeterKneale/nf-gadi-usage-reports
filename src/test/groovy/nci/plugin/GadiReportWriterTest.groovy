@@ -19,6 +19,13 @@ class GadiReportWriterTest extends Specification {
     @TempDir
     Path tmp
 
+    def "every row has exactly the report fields, in order, and they are the CSV header"() {
+        expect:
+        GadiReportWriter.row(GadiTask.of('COUNT (sample_1)', 'normal', 'work/ab'), FEATURECOUNTS).keySet() as List == GadiReportWriter.FIELDS
+        GadiReportWriter.row(GadiTask.of('LOCAL_STEP (sample_1)'), new GadiUsageRecord()).keySet() as List == GadiReportWriter.FIELDS
+        GadiReportWriterCsv.CSV_HEADER == GadiReportWriter.FIELDS
+    }
+
     def "each writer writes its report under the default name, in the folder it is given"() {
         expect:
         new GadiReportWriterCsv(tmp).path == tmp.resolve('UsageReport.csv')
@@ -102,11 +109,9 @@ class GadiReportWriterTest extends Specification {
         then:
         json.keySet() == ['COUNT'] as Set
         json.COUNT*.name == ['COUNT (sample_1)', 'COUNT (sample_2)']
-        (json.COUNT[0] as Map).keySet() as List == [
-            'sus', 'walltime', 'cputime', 'cpus', 'memory', 'efficiency', 'exitCode',
-            'requestedMemory', 'requestedWalltime', 'requestedJobFS', 'usedJobFS', 'queue', 'name', 'workDir']
+        (json.COUNT[0] as Map).keySet() as List == GadiReportWriter.FIELDS   // the same fields as the CSV columns
         json.COUNT[0].efficiency == '0.34'
         json.COUNT[1].efficiency == null   // log could not be read
-        json.COUNT*.workDir == ['work/ab/cdef12', 'work/cd/ef3456']
+        json.COUNT*.work_dir == ['work/ab/cdef12', 'work/cd/ef3456']
     }
 }

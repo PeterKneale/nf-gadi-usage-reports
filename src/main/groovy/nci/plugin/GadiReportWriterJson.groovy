@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Writes a JSON report in one go when the run finishes, with each
- * task's values grouped by process name.
+ * task's fields grouped by process name.
  */
 @CompileStatic
 class GadiReportWriterJson extends GadiReportWriter {
 
-    /** Report values for each task, grouped by process name. */
+    /** Each task's row, grouped by process name. */
     final Map<String, List<Map<String, String>>> results = new ConcurrentHashMap<>()
 
     static final String FILE_NAME = REPORT_NAME + '.json'
@@ -25,16 +25,14 @@ class GadiReportWriterJson extends GadiReportWriter {
     }
 
     @Override
-    protected void record(GadiTask task, Map<String, String> values) {
-        values['name'] = task.name
-        values['workDir'] = task.workDir
-        results.compute(task.process) { String key, List<Map<String, String>> existingList ->
+    protected void record(Map<String, String> row) {
+        results.compute(row.process) { String key, List<Map<String, String>> existingList ->
             if (existingList == null) {
                 existingList = new ArrayList<Map<String, String>>()
             }
 
             synchronized (existingList) {
-                existingList.add(values)
+                existingList.add(row)
             }
             return existingList
         }

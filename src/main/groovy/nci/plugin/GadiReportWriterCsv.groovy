@@ -14,23 +14,8 @@ import java.nio.file.StandardOpenOption
 @CompileStatic
 class GadiReportWriterCsv extends GadiReportWriter {
 
-    static final List<String> CSV_HEADER = [
-        'Work Dir',
-        'Name',
-        'Process',
-        'Queue',
-        'Service Units',
-        'CPUs',
-        'CPU time',
-        'Used Walltime',
-        'Requested Walltime',
-        'Used Memory',
-        'Requested Memory',
-        'Used JobFS',
-        'Requested JobFS',
-        'Efficiency',
-        'Exit Code',
-    ]
+    /** The CSV header: one column per field. */
+    static final List<String> CSV_HEADER = FIELDS
 
     static final String FILE_NAME = REPORT_NAME + '.csv'
 
@@ -45,25 +30,9 @@ class GadiReportWriterCsv extends GadiReportWriter {
     }
 
     @Override
-    protected void record(GadiTask task, Map<String, String> values) {
-        List<String> row = [
-            task.workDir,
-            task.name,
-            task.process,
-            values.queue,
-            values.sus,
-            values.cpus,
-            values.cputime,
-            values.walltime,
-            values.requestedWalltime,
-            values.memory,
-            values.requestedMemory,
-            values.usedJobFS,
-            values.requestedJobFS,
-            values.efficiency,
-            values.exitCode,
-        ]
-        append(Csv.line(row))
+    protected void record(Map<String, String> row) {
+        List<String> values = FIELDS.collect { String field -> row[field] }
+        append(Csv.line(values))
     }
 
     /** Synchronised so rows from tasks finishing at the same time are not interleaved. */

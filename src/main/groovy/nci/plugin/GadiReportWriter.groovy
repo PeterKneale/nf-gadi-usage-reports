@@ -8,12 +8,34 @@ import java.time.Duration
 /**
  * Writes one usage report file. Call {@link #start()} before the first
  * task, {@link #recordTask} for each task, and {@link #finish()} at the end.
+ *
+ * Every report has the same fields for each task, listed in {@link #FIELDS}:
+ * the CSV report's columns and the JSON report's keys.
  */
 @CompileStatic
 abstract class GadiReportWriter {
 
     /** File name of every report, before its format's extension. */
     static final String REPORT_NAME = 'UsageReport'
+
+    /** The fields reported for each task, in order. */
+    static final List<String> FIELDS = [
+        'work_dir',
+        'name',
+        'process',
+        'queue',
+        'service_units',
+        'cpus',
+        'cpu_time',
+        'used_walltime',
+        'requested_walltime',
+        'used_memory',
+        'requested_memory',
+        'used_jobfs',
+        'requested_jobfs',
+        'efficiency',
+        'exit_code',
+    ].asImmutable()
 
     /** The report file this writer writes. */
     final Path path
@@ -28,43 +50,43 @@ abstract class GadiReportWriter {
 
     /** Records a task that ran on Gadi; usage values are empty if its log could not be read. */
     final void recordTask(GadiTask task, GadiUsageRecord usage) {
-        Map<String, String> values = reportValues(usage)
-        values['queue'] = task.queue
-        record(task, values)
+        record(row(task, usage))
     }
 
     /** Records a task that did not run on Gadi, so has no usage values. */
     final void recordTask(GadiTask task) {
-        record(task, [:])
+        record(row(task, new GadiUsageRecord()))
     }
 
     /** Called once after the last task. */
     void finish() {
     }
 
-    /**
-     * Records one task's report values, keyed as in the JSON report
-     * (see {@link #reportValues}) plus 'queue' for Gadi tasks.
-     */
-    protected abstract void record(GadiTask task, Map<String, String> values)
+    /** Records one task's row: its {@link #FIELDS}, in order. */
+    protected abstract void record(Map<String, String> row)
 
-    private static Map<String, String> reportValues(GadiUsageRecord usage) {
+    /** A task's report values, keyed and ordered as {@link #FIELDS}. */
+    static Map<String, String> row(GadiTask task, GadiUsageRecord usage) {
         Double efficiency = GadiEfficiencyCalculator.calculate(usage)
 
-        // Key order matters: it is the field order in the JSON report
-        return [
-            sus:               usage.serviceUnits?.toPlainString(),
-            walltime:          format(usage.walltimeUsed),
-            cputime:           format(usage.cpuTime),
-            cpus:              usage.cpus?.toString(),
-            memory:            usage.memoryUsed?.toString(),
-            efficiency:        efficiency == null ? null : String.format('%.2f', efficiency),
-            exitCode:          usage.exitCode?.toString(),
-            requestedMemory:   usage.memoryRequested?.toString(),
-            requestedWalltime: format(usage.walltimeRequested),
-            requestedJobFS:    usage.jobfsRequested?.toString(),
-            usedJobFS:         usage.jobfsUsed?.toString(),
-        ]
+        Map<String, String> row = [
+            work_dir:           task.workDir,
+            name:               task.name,
+            process:            task.process,
+            queue:              task.queue,
+            service_units:      usage.serviceUnits?.toPlainString(),
+            cpus:               usage.cpus?.toString(),
+            cpu_time:           format(usage.cpuTime),
+            used_walltime:      format(usage.walltimeUsed),
+            requested_walltime: format(usage.walltimeRequested),
+            used_memory:        usage.memoryUsed?.toString(),
+            requested_memory:   usage.memoryRequested?.toString(),
+            used_jobfs:         usage.jobfsUsed?.toString(),
+            requested_jobfs:    usage.jobfsRequested?.toString(),
+            efficiency:         efficiency == null ? null : String.format('%.2f', efficiency),
+            exit_code:          usage.exitCode?.toString(),
+        ] as LinkedHashMap<String, String>
+        return row
     }
 
     /** Formats a duration as Gadi logs it, e.g. "13:55:28". */

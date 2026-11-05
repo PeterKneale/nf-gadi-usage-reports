@@ -14,8 +14,8 @@ import spock.lang.TempDir
  */
 class NfGadiObserverProcessTest extends Specification {
 
-    static final String HEADER = 'Work Dir,Name,Process,Queue,Service Units,CPUs,CPU time,Used Walltime,Requested Walltime,' +
-        'Used Memory,Requested Memory,Used JobFS,Requested JobFS,Efficiency,Exit Code'
+    static final String HEADER = 'work_dir,name,process,queue,service_units,cpus,cpu_time,used_walltime,requested_walltime,' +
+        'used_memory,requested_memory,used_jobfs,requested_jobfs,efficiency,exit_code'
 
     @TempDir
     Path tmp
