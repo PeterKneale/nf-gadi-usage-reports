@@ -1,0 +1,17 @@
+🔵 Running sort
+[bam_sort_core] merging from 14 files and 5 in-memory blocks...
+🔵 Running index
+🔵 Running stats
+🔵 Running idxstats
+
+======================================================================================
+                  Resource Usage on 2026-10-31 14:33:45:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      17.24
+   NCPUs Requested:    6                   CPU Time Used: 02:26:57        
+   Memory Requested:   42.0GB                Memory Used: 42.0GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:49:16        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

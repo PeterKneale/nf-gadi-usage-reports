@@ -1,0 +1,67 @@
+
+        ==========     _____ _    _ ____  _____  ______          _____  
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.1.1
+
+//========================== featureCounts setting ===========================\\
+||                                                                            ||
+||             Input files : 1 BAM file                                       ||
+||                                                                            ||
+||                           SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1 ... ||
+||                                                                            ||
+||             Output file : SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1 ... ||
+||                 Summary : SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1 ... ||
+||              Paired-end : yes                                              ||
+||        Count read pairs : yes                                              ||
+||              Annotation : annotation_mane_intronic.gtf (GTF)               ||
+||      Dir for temp files : ./                                               ||
+||                                                                            ||
+||                 Threads : 6                                                ||
+||                   Level : meta-feature level                               ||
+||      Multimapping reads : counted                                          ||
+|| Multi-overlapping reads : counted                                          ||
+||   Min overlapping bases : 4                                                ||
+||                                                                            ||
+\\============================================================================//
+
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file annotation_mane_intronic.gtf ...                      ||
+||    Features : 183537                                                       ||
+||    Meta-features : 183537                                                  ||
+||    Chromosomes/contigs : 121                                               ||
+||                                                                            ||
+|| Load FASTA contigs from assembly.fasta...                                  ||
+||    155 contigs were loaded                                                 ||
+||                                                                            ||
+|| Process BAM file SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-CHX-ABC- ... ||
+||    Strand specific : reversely stranded                                    ||
+||    Paired-end reads are included.                                          ||
+||    Total alignments : 16525891                                             ||
+||    Successfully assigned alignments : 14494800 (87.7%)                     ||
+||    Running time : 0.39 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "SAMPLEBATCH00000000-1.S  ||
+|| AMPLE-0000000000000-1-CHX-ABC-1.intronic_mane.featureCounts.tsv.summary"   ||
+||                                                                            ||
+\\============================================================================//
+
+
+======================================================================================
+                  Resource Usage on 2026-10-31 03:12:02:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      0.40
+   NCPUs Requested:    6                   CPU Time Used: 00:02:22        
+   Memory Requested:   42.0GB                Memory Used: 10.89GB         
+   Walltime Requested: 05:00:00            Walltime Used: 00:01:09        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

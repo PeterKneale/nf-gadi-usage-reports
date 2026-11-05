@@ -11,3 +11,6 @@ work
 
 # mac
 .DS_Store
+
+# Raw Gadi task logs: large and may contain identifying data
+src/test/data/

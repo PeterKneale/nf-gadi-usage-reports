@@ -1,0 +1,28 @@
+[2026-10-31 17:50:12,786] multiqc.core.tmp_dir                               [DEBUG  ]  Using new temporary directory: /jobfs/123456789.gadi-pbs/tmpgh8lnb2r
+[2026-10-31 17:50:12,787] root                                               [DEBUG  ]  Logging to file: /jobfs/123456789.gadi-pbs/tmpgh8lnb2r/multiqc.log
+
+/// MultiQC v1.35
+
+[2026-10-31 17:50:12,805] multiqc.core.update_config                         [DEBUG  ]  This is MultiQC v1.35
+[2026-10-31 17:50:12,805] multiqc.core.update_config                         [DEBUG  ]  Running Python 3.14.5 | packaged by conda-forge | (main, May 20 2026, 00:15:36) [GCC 14.3.0]
+[2026-10-31 17:50:12,992] multiqc.config                                     [INFO   ]  Loading config settings from: 1/multiqc_config.yml
+[2026-10-31 17:50:12,992] multiqc.config                                     [DEBUG  ]  New config: {'title': 'MY PIPELINE', 'subtitle': 'Alignment Pipeline Report', 'intro_text': 'Metrics', 'custom_logo_url': 'https://example.org/', 'custom_logo_title': 'My Pipeline', 'custom_logo_width': 200, 'report_section_order': {'fastqc_pre': {'order': 90}, 'trimmomatic': {'order': 80}, 'fastqc_post': {'order': 70}, 'star': {'order': 60}, 'samtools': {'order': 50}, 'rseqc': {'order': 30}, 'picard': {'order': 20}, 'software_versions': {'order': 10}}, 'module_order': [{'fastqc': {'anchor': 'fastqc_pre', 'name': 'FastQC (pre trimming)', 'info': 'This section of the report shows FastQC results before adapter trimming.', 'path_filters': ['*pre_trim*fastqc.zip']}}, 'trimmomatic', {'fastqc': {'anchor': 'fastqc_post', 'name': 'FastQC (post trimming)', 'info': 'This section of the report shows FastQC results after adapter trimming.', 'path_filters': ['*post_trim*fastqc.zip']}}, 'star', 'samtools', 'rseqc', 'picard'], 'export_plots': True, 'disable_version_detection': False, 'run_modules': ['fastqc', 'trimmomatic', 'star', 'samtools', 'rseqc', 'picard']}
+[2026-10-31 17:50:12,993] multiqc.config                                     [DEBUG  ]  Found command line config: {'custom_logo': 'multiqc_logo.png'}
+[2026-10-31 17:50:12,993] multiqc.config                                     [DEBUG  ]  New config: {'custom_logo': '/scratch/xx00/my_pipeline/runs/a900216e-f221-4cf1-9135-25417942dbde/work/24/4452c04991d33ee90c23049f47288c/multiqc_logo.png'}
+[2026-10-31 17:50:12,994] multiqc.multiqc                                    [DEBUG  ]  Working dir : /scratch/xx00/my_pipeline/runs/a900216e-f221-4cf1-9135-25417942dbde/work/24/4452c04991d33ee90c23049f47288c
+[2026-10-31 17:50:12,994] multiqc.multiqc                                    [DEBUG  ]  Template    : default
+[2026-10-31 17:50:12,995] multiqc.multiqc                                    [DEBUG  ]  Command used: /opt/wave/.pixi/envs/default/bin/multiqc --force --no-version-check --verbose --config 1/multiqc_config.yml --cl-config custom_logo: "multiqc_logo.png" .
+[2026-10-31 17:50:12,995] multiqc.core.file_search                           [INFO   ]  Search path: /scratch/xx00/my_pipeline/runs/a900216e-f221-4cf1-9135-25417942dbde/work/24/4452c04991d33ee90c23049f47288c
+... [390 lines trimmed for test fixture] ...
+
+======================================================================================
+                  Resource Usage on 2026-10-31 17:51:25:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      0.16
+   NCPUs Requested:    1                   CPU Time Used: 00:01:07        
+   Memory Requested:   6.0GB                 Memory Used: 2.27GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:03:12        
+   JobFS Requested:    100.0MB                JobFS Used: 9.79MB          
+======================================================================================

@@ -1,0 +1,57 @@
+application/gzip
+application/gzip
+Started analysis of SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Started analysis of SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 5% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 5% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 10% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 10% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 15% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 20% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 15% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 25% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 20% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 30% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 25% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 35% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 30% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 40% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 45% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 35% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 50% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 40% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 55% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 45% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 60% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 50% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 65% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 55% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 70% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 60% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 65% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 75% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 70% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 80% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 75% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 80% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 85% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 85% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 90% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 90% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Approx 95% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+Approx 95% complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Analysis complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_1.gz
+Fontconfig error: No writable cache directories
+Analysis complete for SAMPLEBATCH00000000-1.SAMPLE-0000000000000-1-DMSO-ABC-4.post_trim_2.gz
+
+======================================================================================
+                  Resource Usage on 2026-10-31 10:55:28:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      5.31
+   NCPUs Requested:    2                   CPU Time Used: 01:20:16        
+   Memory Requested:   14.0GB                Memory Used: 14.0GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:45:31        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================

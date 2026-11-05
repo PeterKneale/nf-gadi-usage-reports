@@ -19,308 +19,139 @@ package nci.plugin
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import nextflow.Session
-import nextflow.trace.TraceObserver
-
 import nextflow.processor.TaskHandler
+import nextflow.trace.TraceObserver
 import nextflow.trace.TraceRecord
-import java.nio.file.Path
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
-import java.nio.file.StandardCopyOption
-import java.util.concurrent.ConcurrentHashMap
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import java.util.regex.Matcher
-import nextflow.file.FileHelper
 
-import static java.lang.Math.ceil
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
- * Implements an observer that allows implementing custom
- * logic on nextflow execution events.
+ * Records the Gadi resource usage of each task in a pipeline run,
+ * reading it from the task's job log, and writes it to both a CSV and
+ * a JSON report. At the end of the run the reports are published to
+ * {@code gadi.publishTo}, if set.
  */
 @Slf4j
 @CompileStatic
 class NfGadiObserver implements TraceObserver {
-    private final GadiReportConfig config
 
+    final List<GadiReportWriter> writers
+    private final GadiReportPublisher publisher
+
+    /** How often to check for the job log while PBS is still writing it. */
+    long pollIntervalMillis = 10_000
+
+    /** How long to wait for the job log before reporting the task without usage values. */
+    long maxWaitMillis = 120_000
+
+    /** Writes the reports to the launch directory. */
     NfGadiObserver(Session session) {
-        this.config = new GadiReportConfig(session.config.navigate('gadi', [:]) as Map)
+        this(session, Paths.get(''))
     }
-    
-    
-    private Map<String, List<String>> cachedCSV = [:]
-    private Map<String, Map<String, String>> cachedJson = [:]
 
-    Map<String, List<Map<String, String>>> results = new ConcurrentHashMap<>()
-
-    void addToResults(String key, List<Map<String, String>> newEntries) {
-        results.compute(key) { k, existingList ->
-            if (existingList == null) {
-                existingList = new ArrayList<>()
-            }
-
-            synchronized (existingList) {
-                existingList.addAll(newEntries)
-            }
-            return existingList
-        }
+    /** @param reportFolder where to write the reports */
+    NfGadiObserver(Session session, Path reportFolder) {
+        this.writers = [
+            new GadiReportWriterCsv(reportFolder),
+            new GadiReportWriterJson(reportFolder),
+        ] as List<GadiReportWriter>
+        this.publisher = new GadiReportPublisher(session.config.navigate('gadi.publishTo'))
     }
-        
+
     @Override
     void onFlowCreate(Session session) {
-        println "Pipeline is starting! 🚀"
+        log.info "Pipeline is starting! 🚀"
     }
 
     @Override
     void onFlowBegin() {
-        if(config.isCsv()) {
-            List<String> headers = [
-                "Name",
-                "Process",
-                "Queue",
-                "Service Units",
-                "CPUs",
-                "CPU time",
-                "Used Walltime",
-                "Requested Walltime",
-                "Used Memory",
-                "Requested Memory",
-                "Used JobFS",
-                "Requested JobFS",
-                "Efficiency",
-                "Exit Code"          
-            ]
+        writers*.start()
+    }
 
-            Files.write(config.path, (headers.join(',') + '\n').getBytes())
+    @Override
+    void onProcessCached(TaskHandler handler, TraceRecord trace) {
+        String taskName = handler.task.name
+        if (!isGadiJob(trace)) {
+            writers.each { it.recordTask(taskName) }
+            return
         }
+
+        Path report = jobLog(trace)
+        GadiUsage usage
+        if (Files.exists(report)) {
+            usage = new GadiUsageParser(report).parse()
+        } else {
+            // The work directory of a cached task may have been cleaned up
+            log.warn "Cannot find log file ${report}, reporting this task without usage values"
+            usage = new GadiUsage()
+        }
+        String queue = trace.get('queue') as String
+        writers.each { it.recordTask(taskName, usage, queue) }
+    }
+
+    @Override
+    void onProcessComplete(TaskHandler handler, TraceRecord trace) {
+        String taskName = handler.task.name
+        if (!isGadiJob(trace)) {
+            writers.each { it.recordTask(taskName) }
+            return
+        }
+
+        GadiUsage usage = waitForUsage(jobLog(trace))
+        String queue = trace.get('queue') as String
+        writers.each { it.recordTask(taskName, usage, queue) }
     }
 
     @Override
     void onFlowComplete() {
-        
-        if(config.isJson()){
-            Files.write(config.path, JsonOutput.prettyPrint(JsonOutput.toJson(results)).bytes)
-        }
-
-        String resolvedPublishTo = config.resolvePublishTo()
-
-        if (resolvedPublishTo) {
-            try {
-                Path dest = FileHelper.asPath(resolvedPublishTo) as Path
-                Files.copy(config.path, dest, StandardCopyOption.REPLACE_EXISTING)
-                log.info "Usage report published to $dest"
-            } catch (Exception e) {
-                log.warn "Failed to publish usage report to '$resolvedPublishTo': ${e.message}"
-            }
-        }
-
+        writers*.finish()
+        publisher.publish(writers*.path)
         log.info "Pipeline complete! 👋"
     }
 
-        def extractValuesFromReport(String filePath) {
-        def file = new File(filePath)
-        def sus = null
-        def walltime = null
-        def cpus = null
-        def memory = null
-        def exitCode = null
-        def cputime = null
-        def efficiency = null
-        def requestedMemory = null
-        def requestedWalltime = null
-        def requestedJobFS = null
-        def usedJobFS = null
-    
-        file.eachLine { line ->
-            Matcher susMatcher = (line =~ /Service Units:\s+(\d+\.\d+)/) 
-            if (susMatcher) {
-                sus = susMatcher.group(1)
-            }
-
-            Matcher walltimeMatcher = (line =~ /Walltime Used:\s+(\d{2}:\d{2}:\d{2})/)
-            if (walltimeMatcher) {
-                walltime = walltimeMatcher.group(1)
-            }
-
-            Matcher cputimeMatcher = (line =~ /CPU Time Used:\s+(\d{2}:\d{2}:\d{2})/)
-            if (cputimeMatcher) {
-                cputime = cputimeMatcher.group(1)
-            }
-
-            Matcher cpusMatcher = (line =~ /NCPUs Requested:\s+(\d+)/)
-            if (cpusMatcher) {
-                cpus = cpusMatcher.group(1)
-            }
-
-            Matcher memoryMatcher = (line =~ /(?<!GPU )Memory Used:\s+(\d+\.\d+\wB)/)
-            if (memoryMatcher.find()) {
-                memory = memoryMatcher.group(1)
-            }
-
-            Matcher exitCodeMatcher = (line =~ /Exit Status:\s+(-?\d+)/)
-            if (exitCodeMatcher.find()) {
-                exitCode = exitCodeMatcher.group(1)
-            }
-
-            Matcher matcher = (line =~ /Memory Requested:\s+(\d+\.\d+\wB)/)
-            if (matcher.find()) {
-                requestedMemory = matcher.group(1)
-            }
-
-            matcher = (line =~ /Walltime Requested:\s+(\d{2}:\d{2}:\d{2})/)
-            if (matcher.find()) {
-                requestedWalltime = matcher.group(1)
-            }
-
-            matcher = (line =~ /JobFS Requested:\s+(\d+\.\d+\wB)/)
-            if (matcher.find()) {
-                requestedJobFS = matcher.group(1)
-            }
-
-            matcher = (line =~ /JobFS Used:\s+(\S+)/)
-            if (matcher.find()) {
-                usedJobFS = matcher.group(1)
-            }
-
+    /**
+     * Waits for PBS to write the job log, then reads it. One time budget
+     * covers both waiting for the log to appear and for it to be complete.
+     *
+     * @return the usage, with empty values if the log never appeared
+     */
+    private GadiUsage waitForUsage(Path report) {
+        long waited = 0
+        while (!Files.exists(report) && waited < maxWaitMillis) {
+            log.info "Waiting for report file to be created: ${report}"
+            sleep(pollIntervalMillis)
+            waited += pollIntervalMillis
         }
 
-        // calculating the efficiency
-        if (cputime != null && cputime != null) {
-            def cpus_used = ceil(cpus.toDouble())
-            def walltimeComps = walltime.split(':').collect { it.toInteger() }
-            Double walltime_mins = (walltimeComps[0] * 60) + walltimeComps[1]+ (walltimeComps[2] / 60.0)
-            def cputimeComps = cputime.split(':').collect { it.toInteger() }
-            Double cputime_mins = (cputimeComps[0] * 60) + cputimeComps[1] + (cputimeComps[2] / 60.0)
-            def e = (cputime_mins / walltime_mins / cpus_used) as Double
-            efficiency = String.format("%.2f", e)
+        if (!Files.exists(report)) {
+            log.warn "Cannot find log file ${report} after ${maxWaitMillis.intdiv(1000)}s, reporting this task without usage values"
+            return new GadiUsage()
         }
-    
-        return [
-                    sus: sus, 
-                    walltime: walltime, 
-                    cputime: cputime, 
-                    cpus: cpus, 
-                    memory: memory, 
-                    efficiency: efficiency, 
-                    exitCode: exitCode, 
-                    requestedMemory: requestedMemory, 
-                    requestedWalltime: requestedWalltime,
-                    requestedJobFS: requestedJobFS,
-                    usedJobFS: usedJobFS
-                ]
+
+        GadiUsageParser parser = new GadiUsageParser(report)
+
+        // Poll quietly: fields are expected to be missing until PBS finishes writing the log
+        GadiUsage usage = parser.parse(false)
+        while (!usage.isComplete() && waited < maxWaitMillis) {
+            sleep(pollIntervalMillis)
+            waited += pollIntervalMillis
+            log.info "Waiting for log file to complete"
+            usage = parser.parse(false)
+        }
+
+        // Final read warns once about any field still missing
+        return parser.parse()
     }
 
-    @Override
-    void onProcessCached(TaskHandler handler, TraceRecord trace){
-
-        final jobid = (trace.get('native_id') as String).trim()
-        final workdir = trace.get('workdir').toString() as String
-        final report = Path.of(workdir + "/.command.log")
-        final queue = trace.get('queue').toString() as String
-
-        Map<String, String> values = [:]
-
-        if (jobid.contains('gadi-pbs')) {
-            values = extractValuesFromReport(report.toUriString()) as Map
-            values["queue"] = queue
-        }
-
-        String process_name = handler.task.name
-        if(config.isCsv()) {
-
-            List<String> row = [
-                process_name,
-                process_name.split(/\s+/)[0],
-                values.queue,
-                values.sus,
-                values.cpus,        
-                values.cputime,
-                values.walltime,
-                values.requestedWalltime,
-                values.memory,
-                values.requestedMemory,
-                values.usedJobFS,
-                values.requestedJobFS,
-                values.efficiency,
-                values.exitCode
-            ]
-    
-            Files.write(config.path, (row.join(',') + '\n').getBytes(), StandardOpenOption.APPEND)
-        }
-
-        values['name'] = process_name
-
-        addToResults(process_name.split(/\s+/)[0], [values])
-
+    private static boolean isGadiJob(TraceRecord trace) {
+        String jobId = (trace.get('native_id') as String).trim()
+        return jobId.contains('gadi-pbs')
     }
 
-    
-    void onProcessComplete(TaskHandler handler, TraceRecord trace){
-        final jobid = (trace.get('native_id') as String).trim()
-        final workdir = trace.get('workdir').toString() as String
-        final report = Path.of(workdir + "/.command.log")
-        final queue = trace.get('queue').toString() as String
-
-        Map<String, String> values = [:]
-
-        if (jobid.contains('gadi-pbs')) {
-
-            int count = 0
-            while (!Files.exists(report)) {
-                log.info "Waiting for report file to be created: ${report}"
-                sleep(10000) // Sleep for 10 seconds
-
-                count = count + 10
-                if (count >= 120) {     // If the log file isn't generated in 120s, it will break the loop
-                    log.info "Cannot find log file:  ${report}"
-                    break;
-                }
-            }
-
-            values = extractValuesFromReport(report.toUriString()) as Map
-         
-            while (values.sus == null || values.walltime == null || values.cpus == null || values.memory == null) {
-                sleep(10000)
-                log.info "Waiting for log file to complete"
-                values = extractValuesFromReport(report.toUriString()) as Map
-                
-                count = count + 10
-                if (count >= 120) {     // If the log file isn't completed in 120s, it will break the loop
-                    break;
-                }
-            }
-
-            values["queue"] = queue
-        }
-
-        String process_name = handler.task.name
-        if(config.isCsv()) {
-
-            List<String> row = [
-                process_name,
-                process_name.split(/\s+/)[0],
-                values.queue,
-                values.sus,
-                values.cpus,        
-                values.cputime,
-                values.walltime,
-                values.requestedWalltime,
-                values.memory,
-                values.requestedMemory,
-                values.usedJobFS,
-                values.requestedJobFS,
-                values.efficiency,
-                values.exitCode
-            ]
-    
-            Files.write(config.path, (row.join(',') + '\n').getBytes(), StandardOpenOption.APPEND)
-        }
-
-
-        values['name'] = process_name
-
-        addToResults(process_name.split(/\s+/)[0], [values])
-        
+    private static Path jobLog(TraceRecord trace) {
+        String workdir = trace.get('workdir').toString()
+        return Path.of(workdir + '/.command.log')
     }
 }

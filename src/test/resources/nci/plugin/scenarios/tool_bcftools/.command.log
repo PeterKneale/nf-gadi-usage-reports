@@ -1,0 +1,15 @@
+Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
+[mpileup] 1 samples in 1 input files
+[mpileup] maximum number of reads per input file set to -d 1000000
+
+======================================================================================
+                  Resource Usage on 2026-10-31 13:40:43:
+   Job Id:             123456789.gadi-pbs
+   Project:            xx00
+   Exit Status:        0
+   Service Units:      3.00
+   NCPUs Requested:    6                   CPU Time Used: 00:08:49        
+   Memory Requested:   42.0GB                Memory Used: 3.77GB          
+   Walltime Requested: 05:00:00            Walltime Used: 00:08:35        
+   JobFS Requested:    100.0MB                JobFS Used: 0B              
+======================================================================================
