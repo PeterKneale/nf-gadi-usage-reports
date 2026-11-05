@@ -17,3 +17,6 @@ src/test/data/
 
 # Reports written by running the plugin or command line tool in the project
 /UsageReport.*
+
+# Reports written by the example pipeline
+example/UsageReport.*

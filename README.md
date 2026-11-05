@@ -62,6 +62,10 @@ Run the pipeline as usual. When it completes, find the two reports in the launch
 
 The next run replaces both files.
 
+### Test the plugin
+
+The `example` folder holds a small pipeline that shows each kind of report row: busy jobs, idle jobs, a failed job and a task that does not run on Gadi. See [example/README.md](example/README.md).
+
 ## Usage
 
 ### The CSV report
@@ -141,7 +145,7 @@ When a job completes, PBS adds a Resource Usage block to the output of the job. 
 - **Wait for the log.** PBS writes the block a short time after the job ends. The plugin waits up to 2 minutes for the block. It waits in the background, so the pipeline continues. When the pipeline completes, the plugin waits for the last logs before it writes the JSON report.
 - **Missing or unreadable logs.** If the log does not appear, or the plugin cannot read it, the plugin reports the task with empty values. It also writes a warning to the Nextflow log.
 - **Cached tasks.** When you resume a pipeline with `-resume`, the plugin reads the log of each cached task from its old work directory. If that directory is gone, the plugin reports the task with empty values.
-- **Tasks that did not run on Gadi.** A task that ran with a different executor, for example `local`, is reported with its name only.
+- **Tasks that did not run on Gadi.** A task that ran with a different executor, for example `local`, is reported with its name and queue only. Its usage values are empty.
 
 ### Publish the reports
 
