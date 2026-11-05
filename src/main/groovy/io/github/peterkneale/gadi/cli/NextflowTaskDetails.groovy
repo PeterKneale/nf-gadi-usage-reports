@@ -13,7 +13,7 @@ import java.util.regex.Matcher
  * directives.
  */
 @CompileStatic
-class NextflowTaskScript {
+class NextflowTaskDetails {
 
     /** The job script Nextflow writes in each task's work directory. */
     static final String TASK_SCRIPT = '.command.run'
@@ -28,16 +28,16 @@ class NextflowTaskScript {
     /** The queue from the PBS directive {@code #PBS -q}; null if unknown. */
     final String queue
 
-    private NextflowTaskScript(String taskName, String queue) {
+    private NextflowTaskDetails(String taskName, String queue) {
         this.taskName = taskName
         this.queue = queue
     }
 
-    /** Reads the job script in a work directory; values are null if it is missing. */
-    static NextflowTaskScript read(Path workDir) {
+    /** Loads the details from the job script in a work directory; values are null if it is missing. */
+    static NextflowTaskDetails loadFromWorkDir(Path workDir) {
         Path script = workDir.resolve(TASK_SCRIPT)
         if (!Files.isRegularFile(script)) {
-            return new NextflowTaskScript(null, null)
+            return new NextflowTaskDetails(null, null)
         }
 
         String taskName = null
@@ -54,6 +54,6 @@ class NextflowTaskScript {
                 queue = queueDirective.group(1)
             }
         }
-        return new NextflowTaskScript(taskName, queue)
+        return new NextflowTaskDetails(taskName, queue)
     }
 }

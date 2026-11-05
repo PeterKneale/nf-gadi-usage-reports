@@ -92,11 +92,11 @@ class GadiUsageReportCli {
         report.start()
         for (Path workDir : workDirs) {
             String relative = relativeName(folder, workDir)
-            NextflowTaskScript script = NextflowTaskScript.read(workDir)
+            NextflowTaskDetails details = NextflowTaskDetails.loadFromWorkDir(workDir)
 
             // Named as Nextflow named it; by its work directory if the job script is missing
-            String taskName = script.taskName ?: relative
-            GadiTask task = GadiTask.of(taskName, script.queue, relative)
+            String taskName = details.taskName ?: relative
+            GadiTask task = GadiTask.of(taskName, details.queue, relative)
 
             GadiUsageRecord usage
             try {
