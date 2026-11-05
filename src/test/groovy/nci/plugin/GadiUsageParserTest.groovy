@@ -48,6 +48,33 @@ class GadiUsageParserTest extends Specification {
         '144:12:30' || '144:12:30'  // EXPECTED: e.g. 48 CPUs busy for 3 hours; was not read when the pattern allowed only two-digit hours
     }
 
+    @Unroll
+    def "sizes are read with or without decimals: #logged"() {
+        given: 'the four size lines as Gadi writes them, all with the same size'
+        def text = """\
+            |   Memory Requested:   ${logged}                Memory Used: ${logged}
+            |   JobFS Requested:    ${logged}                JobFS Used: ${logged}
+            |""".stripMargin()
+
+        when:
+        def usage = GadiUsageParser.parseText(text)
+
+        then:
+        usage.memoryUsed == size(logged)
+        usage.memoryRequested == size(logged)
+        usage.jobfsUsed == size(logged)
+        usage.jobfsRequested == size(logged)
+
+        where:
+        logged << [
+            '10.89GB',   // EXPECTED: as in every real log so far
+            '100.0MB',
+            '512MB',     // EXPECTED: whole number, no decimal point
+            '14GB',
+            '0B',        // EXPECTED: no unit prefix, as JobFS Used is often logged
+        ]
+    }
+
     def "walltime over 99 hours is read"() {
         given:
         def text = '   Walltime Requested: 120:00:00            Walltime Used: 100:30:00        '

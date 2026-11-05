@@ -70,6 +70,22 @@ class NfGadiObserverProcessTest extends Specification {
         ]
     }
 
+    def "a task that never got a job ID is reported with its name only"() {
+        given: 'a task that failed before it was submitted, so Nextflow has no native_id for it'
+        def unsubmitted = Stub(TraceRecord) {
+            get('native_id') >> null
+            get('workdir') >> tmp.resolve('never_run').toString()
+            get('queue') >> 'normal'
+        }
+
+        when:
+        observer.onProcessComplete(handler('ALIGN (sample_3)'), unsubmitted)
+
+        then:
+        noExceptionThrown()   // was a NullPointerException
+        report.readLines()[1] == "${tmp.resolve('never_run')},ALIGN (sample_3),ALIGN,normal,,,,,,,,,,,".toString()
+    }
+
     def "cached task whose work directory was cleaned up is reported without usage values"() {
         when:
         observer.onProcessCached(handler('ALIGN (sample_2)'), trace(tmp.resolve('cleaned_workdir')))

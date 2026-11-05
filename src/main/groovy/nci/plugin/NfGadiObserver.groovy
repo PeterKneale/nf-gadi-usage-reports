@@ -98,9 +98,10 @@ class NfGadiObserver implements TraceObserver {
         log.info "Pipeline complete! 👋"
     }
 
+    /** False for a task with no job ID, e.g. one that failed before it was submitted. */
     private static boolean isGadiJob(TraceRecord trace) {
-        String jobId = (trace.get('native_id') as String).trim()
-        return jobId.contains('gadi-pbs')
+        String jobId = trace.get('native_id') as String
+        return jobId != null && jobId.contains('gadi-pbs')
     }
 
     private static Path workDir(TraceRecord trace) {

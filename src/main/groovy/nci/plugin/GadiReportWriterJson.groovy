@@ -38,9 +38,11 @@ class GadiReportWriterJson extends GadiReportWriter {
         }
     }
 
+    /** Writes the report, with processes listed by name so the order is the same every run. */
     @Override
     void finish() {
-        Files.write(path, JsonOutput.prettyPrint(JsonOutput.toJson(results)).bytes)
+        Map<String, List<Map<String, String>>> byProcessName = new TreeMap<>(results)
+        Files.write(path, JsonOutput.prettyPrint(JsonOutput.toJson(byProcessName)).bytes)
         super.finish()
     }
 }

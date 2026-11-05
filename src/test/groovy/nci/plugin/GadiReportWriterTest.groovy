@@ -19,6 +19,23 @@ class GadiReportWriterTest extends Specification {
     @TempDir
     Path tmp
 
+    def "JSON report: processes are listed by name, whatever order their tasks finished in"() {
+        given:
+        def writer = new GadiReportWriterJson(tmp)
+        def finishOrder = ['TRIM', 'ALIGN', 'QC', 'COUNT', 'MULTIQC', 'BAM_SORT', 'FASTQC', 'ZIP', 'INDEX', 'DEDUP']
+
+        when:
+        writer.start()
+        finishOrder.each { String process -> writer.recordTask(GadiTask.of("${process} (sample_1)", 'normal'), FEATURECOUNTS) }
+        writer.recordTask(GadiTask.of('ALIGN (sample_2)', 'normal'), FEATURECOUNTS)
+        writer.finish()
+        def json = new JsonSlurper().parse(writer.path.toFile()) as Map
+
+        then:
+        json.keySet() as List == finishOrder.sort(false)
+        json.ALIGN*.name == ['ALIGN (sample_1)', 'ALIGN (sample_2)']   // tasks keep the order they were recorded in
+    }
+
     def "every row has exactly the report fields, in order, and they are the CSV header"() {
         expect:
         GadiReportWriter.row(GadiTask.of('COUNT (sample_1)', 'normal', 'work/ab'), FEATURECOUNTS).keySet() as List == GadiReportWriter.FIELDS

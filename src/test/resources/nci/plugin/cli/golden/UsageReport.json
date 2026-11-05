@@ -1,59 +1,21 @@
 {
-    "tool_multiqc": [
+    "exit_code_255": [
         {
-            "work_dir": "tool_multiqc",
-            "name": "tool_multiqc",
-            "process": "tool_multiqc",
+            "work_dir": "exit_code_255",
+            "name": "exit_code_255",
+            "process": "exit_code_255",
             "queue": null,
-            "service_units": "0.16",
+            "service_units": "0.11",
             "cpus": "1",
-            "cpu_time": "00:01:07",
-            "used_walltime": "00:03:12",
+            "cpu_time": "00:00:19",
+            "used_walltime": "00:02:15",
             "requested_walltime": "05:00:00",
-            "used_memory": "2.27GB",
+            "used_memory": "14.75MB",
             "requested_memory": "6.0GB",
-            "used_jobfs": "9.79MB",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.35",
-            "exit_code": "0"
-        }
-    ],
-    "tool_samtools": [
-        {
-            "work_dir": "tool_samtools",
-            "name": "tool_samtools",
-            "process": "tool_samtools",
-            "queue": null,
-            "service_units": "17.24",
-            "cpus": "6",
-            "cpu_time": "02:26:57",
-            "used_walltime": "00:49:16",
-            "requested_walltime": "05:00:00",
-            "used_memory": "42.0GB",
-            "requested_memory": "42.0GB",
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
-            "efficiency": "0.50",
-            "exit_code": "0"
-        }
-    ],
-    "tool_regtools": [
-        {
-            "work_dir": "tool_regtools",
-            "name": "tool_regtools",
-            "process": "tool_regtools",
-            "queue": null,
-            "service_units": "10.31",
-            "cpus": "6",
-            "cpu_time": "00:22:06",
-            "used_walltime": "00:29:28",
-            "requested_walltime": "05:00:00",
-            "used_memory": "26.94GB",
-            "requested_memory": "42.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.13",
-            "exit_code": "0"
+            "efficiency": "0.14",
+            "exit_code": "255"
         }
     ],
     "exit_code_negative": [
@@ -94,6 +56,44 @@
             "exit_code": "0"
         }
     ],
+    "tool_bedtools": [
+        {
+            "work_dir": "tool_bedtools",
+            "name": "tool_bedtools",
+            "process": "tool_bedtools",
+            "queue": null,
+            "service_units": "0.07",
+            "cpus": "2",
+            "cpu_time": "00:00:00",
+            "used_walltime": "00:00:36",
+            "requested_walltime": "05:00:00",
+            "used_memory": "69.85MB",
+            "requested_memory": "14.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.00",
+            "exit_code": "0"
+        }
+    ],
+    "tool_fastqc": [
+        {
+            "work_dir": "tool_fastqc",
+            "name": "tool_fastqc",
+            "process": "tool_fastqc",
+            "queue": null,
+            "service_units": "5.31",
+            "cpus": "2",
+            "cpu_time": "01:20:16",
+            "used_walltime": "00:45:31",
+            "requested_walltime": "05:00:00",
+            "used_memory": "14.0GB",
+            "requested_memory": "14.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.88",
+            "exit_code": "0"
+        }
+    ],
     "tool_featurecounts": [
         {
             "work_dir": "tool_featurecounts",
@@ -110,6 +110,101 @@
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
             "efficiency": "0.34",
+            "exit_code": "0"
+        }
+    ],
+    "tool_multiqc": [
+        {
+            "work_dir": "tool_multiqc",
+            "name": "tool_multiqc",
+            "process": "tool_multiqc",
+            "queue": null,
+            "service_units": "0.16",
+            "cpus": "1",
+            "cpu_time": "00:01:07",
+            "used_walltime": "00:03:12",
+            "requested_walltime": "05:00:00",
+            "used_memory": "2.27GB",
+            "requested_memory": "6.0GB",
+            "used_jobfs": "9.79MB",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.35",
+            "exit_code": "0"
+        }
+    ],
+    "tool_picard": [
+        {
+            "work_dir": "tool_picard",
+            "name": "tool_picard",
+            "process": "tool_picard",
+            "queue": null,
+            "service_units": "115.15",
+            "cpus": "24",
+            "cpu_time": "02:46:15",
+            "used_walltime": "02:23:56",
+            "requested_walltime": "05:00:00",
+            "used_memory": "68.83GB",
+            "requested_memory": "84.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.05",
+            "exit_code": "0"
+        }
+    ],
+    "tool_reformat": [
+        {
+            "work_dir": "tool_reformat",
+            "name": "tool_reformat",
+            "process": "tool_reformat",
+            "queue": null,
+            "service_units": "1.54",
+            "cpus": "2",
+            "cpu_time": "00:09:08",
+            "used_walltime": "00:13:13",
+            "requested_walltime": "05:00:00",
+            "used_memory": "14.0GB",
+            "requested_memory": "14.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.35",
+            "exit_code": "0"
+        }
+    ],
+    "tool_regtools": [
+        {
+            "work_dir": "tool_regtools",
+            "name": "tool_regtools",
+            "process": "tool_regtools",
+            "queue": null,
+            "service_units": "10.31",
+            "cpus": "6",
+            "cpu_time": "00:22:06",
+            "used_walltime": "00:29:28",
+            "requested_walltime": "05:00:00",
+            "used_memory": "26.94GB",
+            "requested_memory": "42.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.13",
+            "exit_code": "0"
+        }
+    ],
+    "tool_samtools": [
+        {
+            "work_dir": "tool_samtools",
+            "name": "tool_samtools",
+            "process": "tool_samtools",
+            "queue": null,
+            "service_units": "17.24",
+            "cpus": "6",
+            "cpu_time": "02:26:57",
+            "used_walltime": "00:49:16",
+            "requested_walltime": "05:00:00",
+            "used_memory": "42.0GB",
+            "requested_memory": "42.0GB",
+            "used_jobfs": "0B",
+            "requested_jobfs": "100.0MB",
+            "efficiency": "0.50",
             "exit_code": "0"
         }
     ],
@@ -148,101 +243,6 @@
             "used_jobfs": "0B",
             "requested_jobfs": "100.0MB",
             "efficiency": "0.69",
-            "exit_code": "0"
-        }
-    ],
-    "tool_bedtools": [
-        {
-            "work_dir": "tool_bedtools",
-            "name": "tool_bedtools",
-            "process": "tool_bedtools",
-            "queue": null,
-            "service_units": "0.07",
-            "cpus": "2",
-            "cpu_time": "00:00:00",
-            "used_walltime": "00:00:36",
-            "requested_walltime": "05:00:00",
-            "used_memory": "69.85MB",
-            "requested_memory": "14.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.00",
-            "exit_code": "0"
-        }
-    ],
-    "tool_picard": [
-        {
-            "work_dir": "tool_picard",
-            "name": "tool_picard",
-            "process": "tool_picard",
-            "queue": null,
-            "service_units": "115.15",
-            "cpus": "24",
-            "cpu_time": "02:46:15",
-            "used_walltime": "02:23:56",
-            "requested_walltime": "05:00:00",
-            "used_memory": "68.83GB",
-            "requested_memory": "84.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.05",
-            "exit_code": "0"
-        }
-    ],
-    "exit_code_255": [
-        {
-            "work_dir": "exit_code_255",
-            "name": "exit_code_255",
-            "process": "exit_code_255",
-            "queue": null,
-            "service_units": "0.11",
-            "cpus": "1",
-            "cpu_time": "00:00:19",
-            "used_walltime": "00:02:15",
-            "requested_walltime": "05:00:00",
-            "used_memory": "14.75MB",
-            "requested_memory": "6.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.14",
-            "exit_code": "255"
-        }
-    ],
-    "tool_fastqc": [
-        {
-            "work_dir": "tool_fastqc",
-            "name": "tool_fastqc",
-            "process": "tool_fastqc",
-            "queue": null,
-            "service_units": "5.31",
-            "cpus": "2",
-            "cpu_time": "01:20:16",
-            "used_walltime": "00:45:31",
-            "requested_walltime": "05:00:00",
-            "used_memory": "14.0GB",
-            "requested_memory": "14.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.88",
-            "exit_code": "0"
-        }
-    ],
-    "tool_reformat": [
-        {
-            "work_dir": "tool_reformat",
-            "name": "tool_reformat",
-            "process": "tool_reformat",
-            "queue": null,
-            "service_units": "1.54",
-            "cpus": "2",
-            "cpu_time": "00:09:08",
-            "used_walltime": "00:13:13",
-            "requested_walltime": "05:00:00",
-            "used_memory": "14.0GB",
-            "requested_memory": "14.0GB",
-            "used_jobfs": "0B",
-            "requested_jobfs": "100.0MB",
-            "efficiency": "0.35",
             "exit_code": "0"
         }
     ]

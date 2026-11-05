@@ -56,9 +56,8 @@ class GadiUsageReportCliTest extends Specification {
         when:
         run([scenarios().toString()])
 
-        then: 'compared as JSON, since the order of the process groups is not fixed'
-        def slurper = new JsonSlurper()
-        slurper.parse(tmp.resolve('UsageReport.json').toFile()) == slurper.parse(golden('UsageReport.json').toFile())
+        then: 'compared exactly, since processes are listed by name and tasks in path order'
+        tmp.resolve('UsageReport.json').readLines() == golden('UsageReport.json').readLines()
     }
 
     def "scenario logs: the summary counts every log"() {

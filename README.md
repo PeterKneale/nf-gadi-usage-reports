@@ -92,7 +92,7 @@ Values containing commas, such as task names with several tags, are quoted, so t
 
 ### JSON report
 
-The same fields, grouped by process:
+The same fields, grouped by process. Processes are listed by name, so reports from the same tasks always come out in the same order:
 
 ```json
 {

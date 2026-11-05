@@ -26,10 +26,10 @@ class GadiUsageParser {
         cpuTime:           ~/CPU Time Used:\s+(\d+:\d{2}:\d{2})/,
         walltimeUsed:      ~/Walltime Used:\s+(\d+:\d{2}:\d{2})/,
         walltimeRequested: ~/Walltime Requested:\s+(\d+:\d{2}:\d{2})/,
-        memoryUsed:        ~/(?<!GPU )Memory Used:\s+(\d+\.\d+\wB)/,
-        memoryRequested:   ~/Memory Requested:\s+(\d+\.\d+\wB)/,
-        jobfsUsed:         ~/JobFS Used:\s+(\S+)/,
-        jobfsRequested:    ~/JobFS Requested:\s+(\d+\.\d+\wB)/,
+        memoryUsed:        ~/(?<!GPU )Memory Used:\s+(\d+(?:\.\d+)?[KMGTP]?B)/,
+        memoryRequested:   ~/Memory Requested:\s+(\d+(?:\.\d+)?[KMGTP]?B)/,
+        jobfsUsed:         ~/JobFS Used:\s+(\d+(?:\.\d+)?[KMGTP]?B)/,
+        jobfsRequested:    ~/JobFS Requested:\s+(\d+(?:\.\d+)?[KMGTP]?B)/,
     ] as LinkedHashMap<String, Pattern>
 
     private final Path logFile
