@@ -20,9 +20,7 @@ if (workflow.profile != 'local' && !params.project) {
 
 process BUSY {
     tag "${sample}"
-    cpus 4
-    memory '4 GB'
-    time '10 min'
+    label 'process_medium'
 
     input:
     val sample
@@ -43,9 +41,7 @@ process BUSY {
 
 process IDLE {
     tag "${sample}, lane${lane}"   // the comma makes a task name that must be quoted in the CSV
-    cpus 2
-    memory '2 GB'
-    time '10 min'
+    label 'process_low'
 
     input:
     tuple val(sample), val(lane)
@@ -62,9 +58,7 @@ process IDLE {
 }
 
 process FAIL {
-    cpus 1
-    memory '1 GB'
-    time '5 min'
+    label 'process_single'
     errorStrategy 'ignore'   // the pipeline continues
 
     output:

@@ -6,7 +6,7 @@ This folder holds a small pipeline that shows the plugin at work. It runs four k
 | ------- | ----- | -------------------------------------- | --------------------------------------------- |
 | `BUSY`  | 2     | Keeps all 4 requested CPUs busy        | `cpus` 4, `efficiency` close to 1.00          |
 | `IDLE`  | 4     | Sleeps on 2 requested CPUs             | `cpus` 2, `efficiency` close to 0.00          |
-| `FAIL`  | 1     | Exits with status 1                    | `exit_code` 1                                 |
+| `FAIL`  | 1     | Exits with status 1                    | `exit_code` 1, `efficiency` empty             |
 | `LOCAL` | 1     | Runs where Nextflow runs, not on Gadi  | Name and queue only, all usage values empty   |
 
 The `IDLE` task names contain a comma, for example `IDLE (sample_1, lane1)`. The CSV report quotes them.
@@ -34,9 +34,9 @@ The CSV report has a header row and 8 task rows. The task rows look like this, w
 
 ```
 work_dir,name,process,queue,service_units,cpus,cpu_time,used_walltime,requested_walltime,used_memory,requested_memory,used_jobfs,requested_jobfs,efficiency,exit_code
-a1/2b3c4d...,BUSY (sample_1),BUSY,normal,0.27,4,00:04:01,00:01:02,00:10:00,12.5MB,4.0GB,0B,100.0MB,0.97,0
-b2/3c4d5e...,"IDLE (sample_1, lane1)",IDLE,normal,0.14,2,00:00:01,00:01:02,00:10:00,8.2MB,2.0GB,0B,100.0MB,0.01,0
-c3/4d5e6f...,FAIL,FAIL,normal,0.01,1,00:00:00,00:00:02,00:05:00,3.1MB,1.0GB,0B,100.0MB,0.00,1
+a1/2b3c4d...,BUSY (sample_1),BUSY,normal,0.14,4,00:04:01,00:01:02,00:10:00,12.5MB,4.0GB,0B,100.0MB,0.97,0
+b2/3c4d5e...,"IDLE (sample_1, lane1)",IDLE,normal,0.07,2,00:00:01,00:01:02,00:10:00,8.2MB,2.0GB,0B,100.0MB,0.01,0
+c3/4d5e6f...,FAIL,FAIL,normal,0.00,1,00:00:00,00:00:00,00:05:00,3.1MB,1.0GB,0B,100.0MB,,1
 d4/5e6f7a...,LOCAL,LOCAL,normal,,,,,,,,,,,
 ```
 
@@ -44,7 +44,7 @@ Make sure that:
 
 - `BUSY` rows have `efficiency` close to 1.00.
 - `IDLE` rows have `efficiency` close to 0.00.
-- The `FAIL` row has `exit_code` 1.
+- The `FAIL` row has `exit_code` 1. Its `efficiency` is empty, because the job ran for less than a second.
 - The `LOCAL` row has a name and a queue, and no usage values.
 
 ## Try a resumed run
