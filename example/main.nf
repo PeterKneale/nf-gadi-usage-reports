@@ -15,7 +15,7 @@
 params.seconds = 60
 
 if (workflow.profile != 'local' && !params.project) {
-    error "Set your Gadi project code, for example: nextflow run main.nf --project ab12"
+    error "No Gadi project code. Set \$PROJECT, or run: nextflow run main.nf --project ab12"
 }
 
 process BUSY {

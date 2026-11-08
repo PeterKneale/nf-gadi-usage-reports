@@ -14,13 +14,17 @@ The `IDLE` task names contain a comma, for example `IDLE (sample_1, lane1)`. The
 ## Run it
 
 1. Install the plugin. See the [main README](../README.md#install-the-plugin).
-2. Log in to Gadi and go to this folder on `/scratch`.
-3. Run the pipeline with your project code:
+2. Log in to Gadi and go to this folder. Your home folder is fine.
+3. Run the pipeline:
 
    ```
    module load nextflow
-   nextflow run main.nf --project ab12
+   nextflow run main.nf
    ```
+
+The jobs run under your default Gadi project, from `$PROJECT`. Add `--project ab12` to use another project.
+
+The config follows the [nf-core profile for Gadi](https://nf-co.re/configs/nci_gadi/). The Nextflow module on Gadi is modified to accept the `project` and `storage` process directives. The config does not use `clusterOptions`, because Nextflow ignores the `cpus` and `memory` directives when `clusterOptions` contains `-l`.
 
 The pipeline submits 7 jobs to the `normal` queue. Each job runs for about 1 minute. The whole run takes a few minutes, depending on the queue.
 
@@ -52,7 +56,7 @@ Make sure that:
 Run the pipeline again with `-resume`:
 
 ```
-nextflow run main.nf --project ab12 -resume
+nextflow run main.nf -resume
 ```
 
 Nextflow does not run the completed tasks again. The plugin reads their usage from the job logs in their old work directories. The new reports have the same rows as before. The `FAIL` task runs again, because a failed task is not cached.
@@ -66,6 +70,8 @@ nextflow run main.nf -profile local --seconds 2
 ```
 
 The tasks are then not Gadi jobs. The report has a row for each task, with its name and queue and no usage values.
+
+A Nextflow that is not the Gadi module does not know the `project` directive. It prints one warning, `Unrecognized config option 'process.project'`, and ignores the directive.
 
 ## Make the reports again from the job logs
 
