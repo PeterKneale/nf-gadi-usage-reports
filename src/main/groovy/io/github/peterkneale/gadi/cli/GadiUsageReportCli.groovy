@@ -15,7 +15,8 @@ import java.util.stream.Stream
 /**
  * Writes one usage report for the Gadi job logs already in a folder,
  * without Nextflow: finds every {@code .command.log} below the folder
- * and records each as one task in UsageReport.csv and UsageReport.json.
+ * and records each as one task in UsageReport.csv, UsageReport.json and
+ * UsageReport.html.
  *
  * <pre>
  * java -jar gadi-usage-report.jar &lt;folder&gt;
@@ -27,8 +28,8 @@ class GadiUsageReportCli {
     static final String USAGE = '''\
         Usage: java -jar gadi-usage-report.jar <folder>
 
-        Writes UsageReport.csv and UsageReport.json, in the current directory,
-        for every Gadi job log (.command.log) found in <folder> and its
+        Writes UsageReport.csv, UsageReport.json and UsageReport.html, in the
+        current directory, for every Gadi job log (.command.log) found in <folder> and its
         subfolders, e.g. a Nextflow work directory holding any number of
         pipeline runs.
 

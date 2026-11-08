@@ -5,8 +5,8 @@ import groovy.transform.CompileStatic
 import java.nio.file.Path
 
 /**
- * The usage report for one run: a CSV and a JSON report written side by
- * side in one folder. Call {@link #start()} first, {@link #recordTask}
+ * The usage report for one run: a CSV, a JSON and an HTML report written
+ * side by side in one folder. Call {@link #start()} first, {@link #recordTask}
  * for each task, and {@link #finish()} at the end.
  */
 @CompileStatic
@@ -14,15 +14,16 @@ class GadiUsageReport {
 
     private final List<GadiReportWriter> writers
 
-    /** @param folder where to write UsageReport.csv and UsageReport.json */
+    /** @param folder where to write UsageReport.csv, UsageReport.json and UsageReport.html */
     GadiUsageReport(Path folder) {
         this.writers = [
             new GadiReportWriterCsv(folder),
             new GadiReportWriterJson(folder),
+            new GadiReportWriterHtml(folder),
         ] as List<GadiReportWriter>
     }
 
-    /** The report files, CSV then JSON. */
+    /** The report files: CSV, JSON, then HTML. */
     List<Path> getPaths() {
         return writers*.path
     }

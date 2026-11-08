@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gadi usage report</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.7.1/dist/css/tabler.min.css" integrity="sha384-FwFRx3iCRjX2MYq9Ni5guhu0G/HAeKcgZhAMxMtZkceAylYMpaOn6hHeId2bywU9" crossorigin="anonymous">
+  <style>
+    body { background: #fafafa; }
+    .chart { min-height: 20rem; }
+    .chart-note { color: #737373; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="page-wrapper">
+    <div class="page-header">
+      <div class="container-xl">
+        <h2 class="page-title">Gadi usage report</h2>
+        <div class="text-secondary">Service units and CPU efficiency of the Nextflow tasks that ran as Gadi jobs. The CSV report has every task.</div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+
+        <div class="row row-cards mb-3">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader">Service units</div>
+                <div class="h1 mb-1">@@KPI_SERVICE_UNITS@@</div>
+                <div class="text-secondary">Charged by Gadi for the run</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader">Wasted service units</div>
+                <div class="h1 mb-1">@@KPI_WASTED@@</div>
+                <div class="text-secondary">@@KPI_WASTED_NOTE@@</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader">CPU efficiency</div>
+                <div class="h1 mb-1">@@KPI_EFFICIENCY@@</div>
+                <div class="text-secondary">CPU time used of the CPU time requested</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader">Tasks</div>
+                <div class="h1 mb-1">@@KPI_TASKS@@</div>
+                <div class="text-secondary">@@KPI_TASKS_NOTE@@</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row row-cards mb-3">
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Service units by process</h3>
+              </div>
+              <div class="card-body">
+                <div id="chart-service-units" class="chart" role="img" aria-label="Pie chart of service units by process"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Wasted service units by process</h3>
+              </div>
+              <div class="card-body">
+                <div id="chart-wasted" class="chart" role="img" aria-label="Bar chart of wasted service units by process"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <h3 class="card-title">By process <span class="card-subtitle">Click a heading to sort</span></h3>
+          </div>
+          <div id="table-processes" class="table-responsive">
+            <table class="table table-vcenter card-table">
+              <thead>
+                <tr>
+                  <th><button class="table-sort" data-sort="sort-process">Process</button></th>
+                  <th class="text-end"><button class="table-sort" data-sort="sort-tasks">Tasks</button></th>
+                  <th class="text-end"><button class="table-sort" data-sort="sort-failed">Failed</button></th>
+                  <th class="text-end"><button class="table-sort desc" data-sort="sort-service-units">Service units</button></th>
+                  <th class="text-end"><button class="table-sort" data-sort="sort-wasted">Wasted</button></th>
+                  <th class="text-end"><button class="table-sort" data-sort="sort-efficiency">Efficiency</button></th>
+                  <th class="text-end"><button class="table-sort" data-sort="sort-walltime">Used walltime</button></th>
+                </tr>
+              </thead>
+              <tbody class="table-tbody">
+@@PROCESS_ROWS@@
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+@@FAILED_SECTION@@
+
+      </div>
+    </div>
+    <footer class="footer footer-transparent">
+      <div class="container-xl">
+        <div class="text-secondary">
+          Written by <a href="https://github.com/PeterKneale/nf-gadi-usage-reports">nf-gadi-usage-reports</a>.
+          Wasted service units are each task's service units times the share of its requested CPU time left idle.
+          Used walltime adds up the jobs' run times, which overlap when jobs run at the same time.
+          The charts load Tabler and ApexCharts from a CDN, so they need an internet connection.
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script id="report-data" type="application/json">@@CHART_DATA@@</script>
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.7.1/dist/js/tabler.min.js" integrity="sha384-eqBhoRQcupNldY9cDRl77mvk57Y7DWYa+nVjNzLLwtwVynw+RpM/FotWDnIODMwM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.7.1/dist/libs/apexcharts/dist/apexcharts.min.js" integrity="sha384-+hxfT+iExRCsHFUrlWam6cWHSCNZg04vcfjwv9UXGl1M8zs+UrU9Me+z+ciPJZFC" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.7.1/dist/libs/list.js/dist/list.min.js" integrity="sha384-FhEOA/pIE4BfDuwGksHaZD8ms5j+dfB9QIWo7naDMzAVoCE1My4G2iu8/n/R3AAH" crossorigin="anonymous"></script>
+<script>
+  // Sort the process table by the heading clicked. The values sort naturally, so 115.15 comes after 35.07.
+  if (typeof List !== 'undefined') {
+    new List('table-processes', {
+      sortClass: 'table-sort',
+      listClass: 'table-tbody',
+      valueNames: ['sort-process', 'sort-tasks', 'sort-failed', 'sort-service-units', 'sort-wasted', 'sort-efficiency', 'sort-walltime']
+    });
+  }
+</script>
+<script>
+  (function () {
+    var data = JSON.parse(document.getElementById('report-data').textContent);
+    // Tabler's blue, orange, teal, purple, pink and cyan, then gray for "Other"
+    var palette = ['#066fd1', '#f76707', '#0ca678', '#ae3ec9', '#d6336c', '#17a2b8'];
+    var gray = '#737373';
+
+    function note(id, text) {
+      var el = document.getElementById(id);
+      el.className = 'chart-note';
+      el.textContent = text;
+    }
+
+    function su(value) {
+      return Number(value).toFixed(2) + ' SU';
+    }
+
+    if (typeof ApexCharts === 'undefined') {
+      note('chart-service-units', 'The chart could not load. It needs an internet connection. The table below has the values.');
+      note('chart-wasted', 'The chart could not load. It needs an internet connection. The table below has the values.');
+      return;
+    }
+
+    var pie = data.serviceUnits;
+    if (pie.values.length === 0) {
+      note('chart-service-units', 'No task ran as a Gadi job.');
+    } else {
+      var colors = pie.labels.map(function (label, i) {
+        return pie.other > 0 && i === pie.labels.length - 1 ? gray : palette[i];
+      });
+      new ApexCharts(document.getElementById('chart-service-units'), {
+        chart: { type: 'pie', fontFamily: 'inherit', height: 320, animations: { enabled: false }, toolbar: { show: false } },
+        series: pie.values,
+        labels: pie.labels,
+        colors: colors,
+        stroke: { width: 2, colors: ['#ffffff'] },
+        dataLabels: { formatter: function (pct) { return Math.round(pct) + '%'; }, dropShadow: { enabled: false } },
+        legend: { position: 'bottom', fontSize: '12px' },
+        tooltip: { y: { formatter: su } }
+      }).render();
+    }
+
+    var bar = data.wasted;
+    if (bar.values.length === 0) {
+      note('chart-wasted', 'No service units were wasted, or no task has an efficiency.');
+    } else {
+      new ApexCharts(document.getElementById('chart-wasted'), {
+        chart: { type: 'bar', fontFamily: 'inherit', height: Math.max(320, 36 * bar.values.length + 80), animations: { enabled: false }, toolbar: { show: false } },
+        series: [{ name: 'Wasted', data: bar.values }],
+        colors: [palette[0]],
+        plotOptions: { bar: { horizontal: true, barHeight: '60%', borderRadius: 4, borderRadiusApplication: 'end' } },
+        dataLabels: { enabled: false },
+        xaxis: { categories: bar.labels, title: { text: 'Service units' }, labels: { formatter: function (v) { return Number(v).toFixed(0); } } },
+        yaxis: { labels: { maxWidth: 260, style: { fontSize: '12px' } } },
+        grid: { xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } }, borderColor: '#e6e7e9' },
+        tooltip: { y: { formatter: su } }
+      }).render();
+    }
+  })();
+</script>
+</body>
+</html>

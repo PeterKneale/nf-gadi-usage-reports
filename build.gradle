@@ -87,7 +87,7 @@ tasks.register('checkCliJar', Exec) {
         }
     }
     doLast {
-        ['UsageReport.csv', 'UsageReport.json'].each { name ->
+        ['UsageReport.csv', 'UsageReport.json', 'UsageReport.html'].each { name ->
             def written = cliCheckDir.get().file(name).asFile
             if (written.text != new File(cliGolden, name).text) {
                 throw new GradleException("${name} written by the jar differs from the golden copy ${new File(cliGolden, name)}: diff ${written} ${new File(cliGolden, name)}")

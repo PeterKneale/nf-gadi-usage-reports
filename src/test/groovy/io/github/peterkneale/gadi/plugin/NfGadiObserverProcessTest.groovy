@@ -187,7 +187,7 @@ class NfGadiObserverProcessTest extends Specification {
         ]
     }
 
-    def "a run writes both reports, then publishes both to publishTo"() {
+    def "a run writes all three reports, then publishes them to publishTo"() {
         when:
         observer.onProcessComplete(handler('COUNT (sample_1)'), trace(scenario('tool_featurecounts')))
         observer.onFlowComplete()
@@ -197,6 +197,8 @@ class NfGadiObserverProcessTest extends Specification {
         tmp.resolve('UsageReport.json').text.contains('"COUNT (sample_1)"')
         tmp.resolve('published/UsageReport.csv').text == report.text
         tmp.resolve('published/UsageReport.json').text == tmp.resolve('UsageReport.json').text
+        tmp.resolve('UsageReport.html').text.contains('COUNT')
+        tmp.resolve('published/UsageReport.html').text == tmp.resolve('UsageReport.html').text
     }
 
     def "old gadi.format and gadi.output settings are ignored"() {
@@ -211,6 +213,6 @@ class NfGadiObserverProcessTest extends Specification {
         observer.onFlowComplete()
 
         then:
-        folder.toFile().list() as Set == ['UsageReport.csv', 'UsageReport.json'] as Set
+        folder.toFile().list() as Set == ['UsageReport.csv', 'UsageReport.json', 'UsageReport.html'] as Set
     }
 }

@@ -11,7 +11,8 @@ import java.time.Duration
  * task, {@link #recordTask} for each task, and {@link #finish()} at the end.
  *
  * Every report has the same fields for each task, listed in {@link #FIELDS}:
- * the CSV report's columns and the JSON report's keys.
+ * the CSV report's columns, the JSON report's keys and the values the
+ * HTML report sums up.
  */
 @CompileStatic
 abstract class GadiReportWriter {
@@ -102,8 +103,8 @@ abstract class GadiReportWriter {
         return value instanceof BigDecimal ? value.toPlainString() : value.toString()
     }
 
-    /** Formats a duration as Gadi logs it, e.g. "13:55:28". */
-    private static String format(Duration duration) {
+    /** Formats a duration as Gadi logs it, e.g. "13:55:28"; null stays null. */
+    static String format(Duration duration) {
         if (duration == null) {
             return null
         }

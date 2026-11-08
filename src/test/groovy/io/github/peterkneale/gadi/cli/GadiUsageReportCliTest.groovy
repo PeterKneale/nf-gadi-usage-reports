@@ -60,6 +60,14 @@ class GadiUsageReportCliTest extends Specification {
         tmp.resolve('UsageReport.json').readLines() == golden('UsageReport.json').readLines()
     }
 
+    def "scenario logs: the HTML report matches the golden copy"() {
+        when:
+        run([scenarios().toString()])
+
+        then:
+        tmp.resolve('UsageReport.html').readLines() == golden('UsageReport.html').readLines()
+    }
+
     def "scenario logs: the summary counts every log"() {
         when:
         run([scenarios().toString()])

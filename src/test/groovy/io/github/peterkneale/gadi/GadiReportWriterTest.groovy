@@ -47,6 +47,7 @@ class GadiReportWriterTest extends Specification {
         expect:
         new GadiReportWriterCsv(tmp).path == tmp.resolve('UsageReport.csv')
         new GadiReportWriterJson(tmp).path == tmp.resolve('UsageReport.json')
+        new GadiReportWriterHtml(tmp).path == tmp.resolve('UsageReport.html')
     }
 
     def "CSV report: rows written so far are kept if the run never finishes"() {

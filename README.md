@@ -53,14 +53,15 @@ nextflow run main.nf -plugins nf-gadi-usage-reports@1.0.0
 
 ### Run the pipeline
 
-Run the pipeline as usual. When it completes, find the two reports in the launch directory:
+Run the pipeline as usual. When it completes, find the three reports in the launch directory:
 
-| File               | Written                    | Contents                       |
-| ------------------ | -------------------------- | ------------------------------ |
-| `UsageReport.csv`  | As each task completes     | One row for each task          |
-| `UsageReport.json` | When the pipeline completes | All tasks, grouped by process |
+| File               | Written                     | Contents                                                        |
+| ------------------ | --------------------------- | --------------------------------------------------------------- |
+| `UsageReport.csv`  | As each task completes      | One row for each task                                           |
+| `UsageReport.json` | When the pipeline completes | All tasks, grouped by process                                   |
+| `UsageReport.html` | When the pipeline completes | Service units and CPU efficiency, charted and tabled by process |
 
-The next run replaces both files.
+The next run replaces all three files.
 
 ### Test the plugin
 
@@ -124,6 +125,16 @@ Service units, CPUs, efficiency and the exit code are numbers. Durations and siz
 }
 ```
 
+### The HTML report
+
+The HTML report opens in a browser. It sums up the CSV report by process, so a reader can see where the service units went without opening the CSV.
+
+At the top, four numbers: the service units of the run, the service units wasted on idle CPUs, the CPU efficiency and the task count. Below them, two charts. A pie chart shows the service units of the six processes that cost the most, with the rest as one slice named Other. A bar chart shows the ten processes that waste the most service units. A table lists every process with its tasks, failures, service units, wasted service units, efficiency and used walltime. Click a heading to sort the table by that column. A second table lists the failed tasks, with their work directories and exit codes.
+
+The wasted service units of a task are its service units times the share of its requested CPU time that was idle, that is 1 minus its efficiency. A task with no efficiency wastes nothing in the report. Used walltime adds up the run times of the jobs, which overlap when jobs run at the same time.
+
+The page loads [Tabler](https://tabler.io) and its ApexCharts from a CDN, so the charts need an internet connection. The numbers and tables do not. The page keeps the light theme.
+
 ### Efficiency
 
 Efficiency is the CPU time used, divided by the CPU time available:
@@ -175,9 +186,9 @@ gadi {
 
 ### Make reports from existing job logs
 
-The `gadi-usage-report` command line tool writes the same two reports from job logs that already exist. An example is a run that did not use the plugin. The tool needs Java 17 or later. It does not need Nextflow.
+The `gadi-usage-report` command line tool writes the same three reports from job logs that already exist. An example is a run that did not use the plugin. The tool needs Java 17 or later. It does not need Nextflow.
 
-The tool searches a folder and all its subfolders for job logs (`.command.log`). It writes one `UsageReport.csv` and one `UsageReport.json` to the current directory. The reports include all logs found. The folder can hold many pipeline runs, so one report can cover all tasks of all runs.
+The tool searches a folder and all its subfolders for job logs (`.command.log`). It writes one `UsageReport.csv`, one `UsageReport.json` and one `UsageReport.html` to the current directory. The reports include all logs found. The folder can hold many pipeline runs, so one report can cover all tasks of all runs.
 
 #### Get the tool
 
@@ -194,6 +205,8 @@ make cli
 This builds `build/libs/gadi-usage-report.jar`.
 
 #### Run the tool
+
+The commands below expect `gadi-usage-report.jar` in the current directory. If you built it from source, give its path instead: `build/libs/gadi-usage-report.jar`.
 
 Give the tool a Nextflow work directory, a folder of work directories or any folder that contains job logs:
 
@@ -213,6 +226,7 @@ Found 13 job logs in /scratch/ab12/my_pipeline/work
   0 unreadable
 Wrote /home/user/UsageReport.csv
 Wrote /home/user/UsageReport.json
+Wrote /home/user/UsageReport.html
 ```
 
 The summary lists incomplete and unreadable logs by path, up to 10 of each. An incomplete log is still reported. Its missing values are empty.
@@ -241,7 +255,7 @@ The `work_dir` column is relative to the folder that you gave the tool, for exam
 `nf-gadi-usage-reports` is a fork of the [nf-gadi](https://github.com/eileen-xue/nf-gadi) plugin, version 1.4.0. It is a separate plugin. Use it in place of `nf-gadi`, not with it.
 
 - Replace `nf-gadi` with `nf-gadi-usage-reports@1.0.0` in your `plugins` block or `-plugins` option.
-- The plugin always writes both reports, as `UsageReport.csv` and `UsageReport.json`. The `format` and `output` settings are not used. Remove them.
+- The plugin always writes all three reports, as `UsageReport.csv`, `UsageReport.json` and `UsageReport.html`. The `format` and `output` settings are not used. Remove them.
 - `publishTo` is now a folder, not a file. A value such as `"s3://bucket/results/UsageReport.csv"` makes a folder with the name `UsageReport.csv`. Change it to `"s3://bucket/results/"`.
 
 ## Development
@@ -252,18 +266,24 @@ The `work_dir` column is relative to the folder that you gave the tool, for exam
 make test       # run the unit tests, then check the built command line tool
 make assemble   # build the plugin
 make install    # install the plugin in your Nextflow plugins folder
-make cli        # build the command line tool
+make cli        # build the command line tool as build/libs/gadi-usage-report.jar
+```
+
+To try the command line tool on the test logs after building it:
+
+```
+java -jar build/libs/gadi-usage-report.jar src/test/resources/io/github/peterkneale/gadi/scenarios
 ```
 
 ### Code layout
 
-The code has two entry points. They share the rest of the code. All code is under `src/main/groovy/io/github/peterkneale/gadi/`.
+The code has two entry points. They share the rest of the code. All code is under `src/main/groovy/io/github/peterkneale/gadi/`. The HTML report's page is the template `src/main/resources/io/github/peterkneale/gadi/UsageReport.html`.
 
 | Package  | Contents                                                                                       |
 | -------- | ---------------------------------------------------------------------------------------------- |
 | `plugin` | The Nextflow plugin: the entry point, the observer factory, the observer and the publisher     |
 | `cli`    | The command line tool, and the reader of the task details that Nextflow writes to the job script |
-| (root)   | Shared code: the job log parser, the usage record, the efficiency calculator and the report writers |
+| (root)   | Shared code: the job log parser, the usage record, the efficiency calculator, the usage summary and the report writers |
 
 Only the `plugin` package uses Nextflow. The command line jar does not include it.
 

@@ -12,12 +12,12 @@ class GadiUsageReportTest extends Specification {
     @TempDir
     Path tmp
 
-    def "writes the CSV and JSON reports side by side in one folder"() {
+    def "writes the CSV, JSON and HTML reports side by side in one folder"() {
         expect:
-        new GadiUsageReport(tmp).paths == [tmp.resolve('UsageReport.csv'), tmp.resolve('UsageReport.json')]
+        new GadiUsageReport(tmp).paths == [tmp.resolve('UsageReport.csv'), tmp.resolve('UsageReport.json'), tmp.resolve('UsageReport.html')]
     }
 
-    def "every task is recorded in both reports"() {
+    def "every task is recorded in every report"() {
         given:
         def report = new GadiUsageReport(tmp)
         def usage = new GadiUsageRecord(cpus: 1, cpuTime: hms('00:00:30'), walltimeUsed: hms('00:01:00'))
@@ -29,6 +29,7 @@ class GadiUsageReportTest extends Specification {
         report.finish()
         def csv = tmp.resolve('UsageReport.csv').readLines()
         def json = new JsonSlurper().parse(tmp.resolve('UsageReport.json').toFile()) as Map
+        def html = tmp.resolve('UsageReport.html').text
 
         then:
         csv.size() == 3   // header and both tasks
@@ -37,5 +38,7 @@ class GadiUsageReportTest extends Specification {
         json.ALIGN*.name == ['ALIGN (sample_1)']
         json.ALIGN[0].efficiency == 0.50
         json.LOCAL_STEP*.name == ['LOCAL_STEP (sample_1)']
+        html.contains('<td class="sort-process text-break">ALIGN</td>')
+        html.contains('<td class="sort-process text-break">LOCAL_STEP</td>')
     }
 }
